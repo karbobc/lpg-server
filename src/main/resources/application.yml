@@ -1,0 +1,11 @@
+server:
+  port: 12312
+  servlet:
+    context-path: ${API_PREFIX:/api}
+
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}?sslmode=disable
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
