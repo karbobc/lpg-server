@@ -11,4 +11,8 @@ public class ConfigUtils {
     public static String getDatabaseAESKey() {
         return System.getenv("DB_AES_KEY");
     }
+
+    public static String getLYCookie() {
+        return System.getenv("LY_COOKIE");
+    }
 }

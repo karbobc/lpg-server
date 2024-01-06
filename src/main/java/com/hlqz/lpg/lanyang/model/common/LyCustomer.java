@@ -1,0 +1,126 @@
+package com.hlqz.lpg.lanyang.model.common;
+
+import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
+
+/**
+ * @author Karbob
+ * @date 2024-01-06
+ * <p>
+ * 兰洋系统客户信息
+ */
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class LyCustomer {
+
+    /**
+     * 客户 ID
+     */
+    @JsonProperty("cusId")
+    @JsonAlias({"CustId"})
+    private String crId;
+
+    /**
+     * 客户编号
+     */
+    @JsonProperty("cusNo")
+    @JsonAlias({"CustNo"})
+    private String crNo;
+
+    /**
+     * 客户姓名
+     */
+    @JsonProperty("cusName")
+    @JsonAlias({"CustName"})
+    private String crName;
+
+    /**
+     * 客户类型
+     */
+    @JsonProperty("custType")
+    @JsonAlias({"TypeName"})
+    private String crType;
+
+    /**
+     * 客户电话
+     */
+    @JsonProperty("tel")
+    @JsonAlias({"Tel"})
+    private String mobile;
+
+    /**
+     * 详细地址
+     */
+    @JsonProperty("address")
+    @JsonAlias({"Address"})
+    private String address;
+
+    /**
+     * 证件号码
+     */
+    @JsonProperty("idcs")
+    @JsonAlias({"IDCards"})
+    private String idNo;
+
+    /**
+     * 证件类型
+     */
+    @JsonProperty("CardType")
+    @JsonAlias({"IDCardsTypeName"})
+    private String idType;
+
+    /**
+     * 证件地址
+     */
+    @JsonProperty("addressIDCard")
+    @JsonAlias({"AddressIDCard"})
+    private String idAddress;
+
+    /**
+     * 流转周期
+     */
+    @JsonProperty("Cycle")
+    @JsonAlias({"Cycle"})
+    private Integer cycle;
+
+    /**
+     * 经度
+     */
+    @JsonProperty("pX")
+    @JsonAlias("PointX")
+    private BigDecimal longitude;
+
+    /**
+     * 维度
+     */
+    @JsonProperty("pY")
+    @JsonAlias("PointY")
+    private BigDecimal latitude;
+
+    /**
+     * 备注
+     */
+    @JsonProperty("remark")
+    @JsonAlias({"Remark"})
+    private String remark;
+
+    /**
+     * 所属单位 ID
+     */
+    @JsonProperty("sectionId")
+    @JsonAlias({"SectionId"})
+    private Long sectionId;
+
+    /**
+     * 所属单位名称
+     */
+    @JsonAlias({"SectionName"})
+    private String sectionName;
+
+}
