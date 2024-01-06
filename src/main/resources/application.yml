@@ -1,7 +1,5 @@
 server:
   port: 12312
-  servlet:
-    context-path: ${API_PREFIX:/api}
 
 spring:
   datasource:

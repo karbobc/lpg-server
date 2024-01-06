@@ -12,6 +12,7 @@ import java.util.Objects;
  * @date 2024-01-06
  */
 public class CryptoTypeHandler extends BaseTypeHandler<String> {
+
     @Override
     public void setNonNullParameter(PreparedStatement ps, int i, String parameter, JdbcType jdbcType) throws SQLException {
         if (Objects.isNull(parameter)) {
