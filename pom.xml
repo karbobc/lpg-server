@@ -37,6 +37,13 @@
       <version>5.8.24</version>
     </dependency>
 
+    <!-- retrofit -->
+    <dependency>
+      <groupId>com.github.lianjiatech</groupId>
+      <artifactId>retrofit-spring-boot-starter</artifactId>
+      <version>3.0.3</version>
+    </dependency>
+
     <!-- database -->
     <dependency>
       <groupId>org.postgresql</groupId>
