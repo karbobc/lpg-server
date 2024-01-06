@@ -1,6 +1,7 @@
 package com.hlqz.lpg.mybatis.handler;
 
 import com.hlqz.lpg.util.AESUtils;
+import com.hlqz.lpg.util.ConfigUtils;
 import org.apache.ibatis.type.BaseTypeHandler;
 import org.apache.ibatis.type.JdbcType;
 
@@ -19,7 +20,7 @@ public class CryptoTypeHandler extends BaseTypeHandler<String> {
             ps.setNull(i, Types.VARCHAR);
             return;
         }
-        ps.setString(i, AESUtils.encrypt(parameter, ""));
+        ps.setString(i, AESUtils.encrypt(parameter, ConfigUtils.getDatabaseAESKey()));
     }
 
     @Override
@@ -28,7 +29,7 @@ public class CryptoTypeHandler extends BaseTypeHandler<String> {
         if (Objects.isNull(result)) {
             return null;
         }
-        return AESUtils.decrypt(result, "");
+        return AESUtils.decrypt(result, ConfigUtils.getDatabaseAESKey());
     }
 
     @Override
@@ -37,7 +38,7 @@ public class CryptoTypeHandler extends BaseTypeHandler<String> {
         if (Objects.isNull(result)) {
             return null;
         }
-        return AESUtils.decrypt(result, "");
+        return AESUtils.decrypt(result, ConfigUtils.getDatabaseAESKey());
     }
 
     @Override
@@ -46,6 +47,6 @@ public class CryptoTypeHandler extends BaseTypeHandler<String> {
         if (Objects.isNull(result)) {
             return null;
         }
-        return AESUtils.decrypt(result, "");
+        return AESUtils.decrypt(result, ConfigUtils.getDatabaseAESKey());
     }
 }
