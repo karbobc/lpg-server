@@ -1,6 +1,5 @@
 package com.hlqz.lpg.util;
 
-import cn.hutool.core.util.HexUtil;
 import cn.hutool.crypto.SecureUtil;
 import cn.hutool.crypto.symmetric.AES;
 
@@ -21,7 +20,7 @@ public class AESUtils {
      * @param secretKey 密钥
      * @return 密文
      */
-    private String encrypt(String data, String secretKey) {
+    public static String encrypt(String data, String secretKey) {
         AES aes = SecureUtil.aes(secretKey.getBytes(StandardCharsets.UTF_8));
         return aes.encryptBase64(data, StandardCharsets.UTF_8);
     }
@@ -32,7 +31,7 @@ public class AESUtils {
      * @param secretKey 密钥
      * @return 明文
      */
-    private String decrypt(String data, String secretKey) {
+    public static String decrypt(String data, String secretKey) {
         AES aes = SecureUtil.aes(secretKey.getBytes(StandardCharsets.UTF_8));
         return aes.decryptStr(data, StandardCharsets.UTF_8);
     }
