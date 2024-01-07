@@ -3,10 +3,10 @@ package com.hlqz.lpg.lanyang.service;
 import com.github.lianjiatech.retrofit.spring.boot.core.RetrofitClient;
 import com.github.lianjiatech.retrofit.spring.boot.interceptor.Intercept;
 import com.hlqz.lpg.lanyang.interceptor.LyServiceInterceptor;
-import com.hlqz.lpg.lanyang.model.request.LyFetchCustomerParam;
-import com.hlqz.lpg.lanyang.model.request.LyFetchCylinderParam;
-import com.hlqz.lpg.lanyang.model.response.LyFetchCustomerResponse;
-import com.hlqz.lpg.lanyang.model.response.LyFetchCylinderResponse;
+import com.hlqz.lpg.lanyang.model.common.LyCustomer;
+import com.hlqz.lpg.lanyang.model.common.LyCylinder;
+import com.hlqz.lpg.lanyang.model.request.LyFetchByPageParam;
+import com.hlqz.lpg.lanyang.model.response.LyPageResponse;
 import retrofit2.http.Body;
 import retrofit2.http.POST;
 
@@ -24,11 +24,11 @@ public interface LyApiService {
      * 分页查询客户信息
      */
     @POST("BaseCustomer/LoadDataByPage")
-    LyFetchCustomerResponse fetchCustomer(@Body LyFetchCustomerParam param);
+    LyPageResponse<LyCustomer> fetchCustomer(@Body LyFetchByPageParam param);
 
     /**
      * 分页查询钢瓶信息
      */
     @POST("DocVase/LoadDocVases")
-    LyFetchCylinderResponse fetchCylinder(@Body LyFetchCylinderParam param);
+    LyPageResponse<LyCylinder> fetchCylinder(@Body LyFetchByPageParam param);
 }

@@ -1,7 +1,6 @@
 package com.hlqz.lpg.lanyang.model.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.hlqz.lpg.lanyang.model.common.LyCustomer;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,22 +9,24 @@ import java.util.List;
 
 /**
  * @author Karbob
- * @date 2024-01-06
+ * @date 2024-01-07
+ *
+ * 分页响应结果
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class LyFetchCustomerResponse {
+public class LyPageResponse<T> {
 
     /**
-     * 客户列表
+     * 分页数据列表
      */
     @JsonProperty("rows")
-    private List<LyCustomer> crList;
+    private List<T> data;
 
     /**
      * 总数
      */
     @JsonProperty("total")
-    private Integer total;
+    private Integer count;
 }

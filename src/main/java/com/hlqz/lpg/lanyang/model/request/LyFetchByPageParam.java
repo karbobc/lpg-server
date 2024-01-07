@@ -8,12 +8,14 @@ import lombok.NoArgsConstructor;
 
 /**
  * @author Karbob
- * @date 2024-01-07
+ * @date 2024-01-06
+ *
+ * 分页查询数据
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class LyFetchCylinderParam {
+public class LyFetchByPageParam {
 
     /**
      * 页码
@@ -32,7 +34,6 @@ public class LyFetchCylinderParam {
      */
     @JsonProperty("sqlWhere")
     private String sqlWhere;
-
     /**
      * 排序字段
      */
@@ -40,7 +41,7 @@ public class LyFetchCylinderParam {
     private String orderBy;
 
     /**
-     * 排序类型
+     * 排序类型, desc asc
      */
     @JsonProperty("order")
     private LyOrderTypeEnum orderType;
