@@ -12,7 +12,15 @@ public class ConfigUtils {
         return System.getenv("DB_AES_KEY");
     }
 
-    public static String getLYCookie() {
+    public static String getLyCookie() {
         return System.getenv("LY_COOKIE");
+    }
+
+    public static String getLyOptId() {
+        return System.getenv("LY_OPT_ID");
+    }
+
+    public static String getLySectionId() {
+        return System.getenv("LY_SECTION_ID");
     }
 }

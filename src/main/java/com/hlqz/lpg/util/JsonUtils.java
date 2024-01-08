@@ -1,6 +1,7 @@
 package com.hlqz.lpg.util;
 
 import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.json.JsonReadFeature;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -49,6 +50,8 @@ public class JsonUtils {
         om.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         // 允许单引号的 json 格式
         om.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
+        // 允许末尾多余的英文逗号
+        om.configure(JsonReadFeature.ALLOW_TRAILING_COMMA.mappedFeature(), true);
     }
 
     private JsonUtils() {
