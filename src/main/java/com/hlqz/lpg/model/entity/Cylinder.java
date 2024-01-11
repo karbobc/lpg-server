@@ -1,7 +1,7 @@
 package com.hlqz.lpg.model.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
-import com.hlqz.lpg.model.enums.UserStateEnum;
+import com.hlqz.lpg.model.enums.CylinderStateEnum;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -36,7 +36,7 @@ public class Cylinder {
      * 钢瓶状态
      */
     @TableField(value = "state")
-    private UserStateEnum state;
+    private CylinderStateEnum state;
 
     /**
      * 版本号

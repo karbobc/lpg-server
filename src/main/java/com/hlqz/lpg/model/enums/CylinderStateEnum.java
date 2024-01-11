@@ -11,7 +11,7 @@ import lombok.Getter;
  */
 @Getter
 @AllArgsConstructor
-public enum CylinderState {
+public enum CylinderStateEnum {
 
     /**
      * 注销
