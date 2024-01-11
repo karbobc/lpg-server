@@ -37,6 +37,13 @@
       <version>5.8.24</version>
     </dependency>
 
+    <!-- guava -->
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>33.0.0-jre</version>
+    </dependency>
+
     <!-- easyexcel -->
     <dependency>
       <groupId>com.alibaba</groupId>
