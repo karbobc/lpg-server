@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.hlqz.lpg.model.enums.RcEnum;
@@ -53,6 +54,7 @@ public class ApiResult<T> {
     /**
      * 接口响应时间戳, 13 位
      */
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long timestamp;
 
     public ApiResult() {
