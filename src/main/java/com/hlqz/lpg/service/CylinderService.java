@@ -36,7 +36,7 @@ public class CylinderService {
     private CylinderServiceHelper cylinderServiceHelper;
 
     public List<CylinderSearchVO> search(CylinderSearchDTO dto) {
-        final var barcode = dto.getBarcode().trim();
+        final var barcode = dto.getBarcode().trim().toUpperCase();
         final var queryPage = new Page<Cylinder>(1, 5);
         final var result = cylinderDAO.fetchBarcodePageUsingLike(barcode, queryPage);
         final List<Cylinder> cylinderList = result.getRecords();
