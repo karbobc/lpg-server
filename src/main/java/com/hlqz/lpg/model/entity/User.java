@@ -39,6 +39,12 @@ public class User {
     private String address;
 
     /**
+     * 兰洋系统客户编号
+     */
+    @TableField(value = "ly_cr_no")
+    private Integer lyCrNo;
+
+    /**
      * 用户状态
      */
     @TableField(value = "state")
