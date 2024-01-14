@@ -14,6 +14,11 @@ import lombok.Getter;
 public enum DeliveryStateEnum {
 
     /**
+     * 注销
+     */
+    DELETED(-1),
+
+    /**
      * 未配送
      */
     NOT_STARTED(0),
@@ -21,7 +26,12 @@ public enum DeliveryStateEnum {
     /**
      * 已配送
      */
-    DONE(1);
+    DONE(1),
+
+    /**
+     * 配送失败
+     */
+    CRASH(2);
 
     @JsonValue
     @EnumValue
