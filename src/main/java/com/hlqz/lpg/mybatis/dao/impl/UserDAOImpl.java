@@ -1,9 +1,9 @@
 package com.hlqz.lpg.mybatis.dao.impl;
 
 import com.github.yulichang.base.MPJBaseServiceImpl;
-import com.hlqz.lpg.mybatis.mapper.UserMapper;
 import com.hlqz.lpg.model.entity.User;
 import com.hlqz.lpg.mybatis.dao.UserDAO;
+import com.hlqz.lpg.mybatis.mapper.UserMapper;
 import org.springframework.stereotype.Service;
 
 /**
@@ -12,4 +12,11 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class UserDAOImpl extends MPJBaseServiceImpl<UserMapper, User> implements UserDAO {
+
+    @Override
+    public User fetchByRealNameAndMobile(String realName, String mobile) {
+        return lambdaQuery().eq(User::getRealName, realName)
+            .eq(User::getMobile, mobile)
+            .one();
+    }
 }
