@@ -23,4 +23,12 @@ public class ConfigUtils {
     public static String getLySectionId() {
         return System.getenv("LY_SECTION_ID");
     }
+
+    public static String getNtfyUsername() {
+        return System.getenv("NTFY_USERNAME");
+    }
+
+    public static String getNtfyPassword() {
+        return System.getenv("NTFY_PASSWORD");
+    }
 }
