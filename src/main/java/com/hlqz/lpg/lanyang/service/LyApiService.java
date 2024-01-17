@@ -2,7 +2,7 @@ package com.hlqz.lpg.lanyang.service;
 
 import com.github.lianjiatech.retrofit.spring.boot.core.RetrofitClient;
 import com.github.lianjiatech.retrofit.spring.boot.interceptor.Intercept;
-import com.hlqz.lpg.lanyang.interceptor.LyServiceInterceptor;
+import com.hlqz.lpg.lanyang.interceptor.LyApiServiceInterceptor;
 import com.hlqz.lpg.lanyang.model.common.LyCustomer;
 import com.hlqz.lpg.lanyang.model.common.LyCylinder;
 import com.hlqz.lpg.lanyang.model.request.LyFetchByPageParam;
@@ -17,7 +17,7 @@ import retrofit2.http.POST;
  * 兰洋系统 PC 端接口
  */
 @RetrofitClient(baseUrl = "${LY_BASE_URL}")
-@Intercept(handler = LyServiceInterceptor.class)
+@Intercept(handler = LyApiServiceInterceptor.class)
 public interface LyApiService {
 
     /**

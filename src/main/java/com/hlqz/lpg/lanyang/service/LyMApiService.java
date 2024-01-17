@@ -2,7 +2,7 @@ package com.hlqz.lpg.lanyang.service;
 
 import com.github.lianjiatech.retrofit.spring.boot.core.RetrofitClient;
 import com.github.lianjiatech.retrofit.spring.boot.interceptor.Intercept;
-import com.hlqz.lpg.lanyang.interceptor.LyMServiceInterceptor;
+import com.hlqz.lpg.lanyang.interceptor.LyMApiServiceInterceptor;
 import com.hlqz.lpg.lanyang.model.request.LyDeliveryParam;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
@@ -17,7 +17,7 @@ import java.util.Map;
  * 兰洋系统移动端接口
  */
 @RetrofitClient(baseUrl = "${LY_M_BASE_URL}")
-@Intercept(handler = LyMServiceInterceptor.class)
+@Intercept(handler = LyMApiServiceInterceptor.class)
 public interface LyMApiService {
 
     /**
