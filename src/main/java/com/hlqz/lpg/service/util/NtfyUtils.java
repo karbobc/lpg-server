@@ -1,20 +1,34 @@
-package com.hlqz.lpg.util;
+package com.hlqz.lpg.service.util;
 
 import cn.hutool.extra.spring.SpringUtil;
 import com.hlqz.lpg.ntfy.model.request.NtfySendParam;
 import com.hlqz.lpg.ntfy.service.NtfyApiService;
+import com.hlqz.lpg.util.AssertionUtils;
+import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
 /**
  * @author Karbob
  * @date 2024-01-17
  */
 @Slf4j
+@Component
 public class NtfyUtils {
 
+    /**
+     * 默认主题
+     */
     private static final String DEFAULT_TOPIC = "LPG";
 
+    private static NtfyApiService ntfy;
+
     private NtfyUtils() {
+    }
+
+    @PostConstruct
+    public void init() {
+        ntfy = SpringUtil.getBean(NtfyApiService.class);
     }
 
     public static void sendMessage(String message) {
@@ -31,7 +45,6 @@ public class NtfyUtils {
         param.setTopic(topic);
         param.setTitle(title);
         param.setMessage(message);
-        final var ntfy = SpringUtil.getBean(NtfyApiService.class);
         final var result = ntfy.send(param);
         log.info("NtfyUtils, sendMessage, result: {}", result);
     }
