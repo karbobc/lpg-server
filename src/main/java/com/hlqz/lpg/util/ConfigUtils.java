@@ -1,5 +1,7 @@
 package com.hlqz.lpg.util;
 
+import cn.hutool.extra.spring.SpringUtil;
+
 /**
  * @author Karbob
  * @date 2024-01-06
@@ -9,26 +11,26 @@ package com.hlqz.lpg.util;
 public class ConfigUtils {
 
     public static String getDatabaseAESKey() {
-        return System.getenv("DB_AES_KEY");
+        return SpringUtil.getProperty("DB_AES_KEY");
     }
 
     public static String getLyCookie() {
-        return System.getenv("LY_COOKIE");
+        return SpringUtil.getProperty("LY_COOKIE");
     }
 
     public static String getLyOptId() {
-        return System.getenv("LY_OPT_ID");
+        return SpringUtil.getProperty("LY_OPT_ID");
     }
 
     public static String getLySectionId() {
-        return System.getenv("LY_SECTION_ID");
+        return SpringUtil.getProperty("LY_SECTION_ID");
     }
 
     public static String getNtfyUsername() {
-        return System.getenv("NTFY_USERNAME");
+        return SpringUtil.getProperty("NTFY_USERNAME");
     }
 
     public static String getNtfyPassword() {
-        return System.getenv("NTFY_PASSWORD");
+        return SpringUtil.getProperty("NTFY_PASSWORD");
     }
 }
