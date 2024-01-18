@@ -2,6 +2,7 @@ package com.hlqz.lpg.service;
 
 import cn.hutool.core.lang.Validator;
 import cn.hutool.core.util.PhoneUtil;
+import cn.hutool.core.util.StrUtil;
 import com.hlqz.lpg.model.dto.EnrollDTO;
 import com.hlqz.lpg.model.entity.Delivery;
 import com.hlqz.lpg.model.entity.User;
@@ -33,9 +34,9 @@ public class MiscService {
 
     public void enroll(EnrollDTO dto) {
         // 参数校验
-        final var realName = dto.getRealName();
-        final var mobile = dto.getMobile();
-        final var address = dto.getAddress();
+        final var realName = StrUtil.cleanBlank(dto.getRealName());
+        final var mobile = StrUtil.cleanBlank(dto.getMobile());
+        final var address = StrUtil.cleanBlank(dto.getAddress());
         final var barcode = dto.getBarcode();
         AssertionUtils.assertTrue(Validator.isChineseName(realName), "请输入正确的姓名!!!");
         AssertionUtils.assertTrue(PhoneUtil.isMobile(mobile) || PhoneUtil.isTel(mobile), "请输入正确的手机号码!!!");
