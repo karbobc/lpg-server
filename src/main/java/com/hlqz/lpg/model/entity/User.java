@@ -2,6 +2,7 @@ package com.hlqz.lpg.model.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
 import com.hlqz.lpg.model.enums.UserStateEnum;
+import com.hlqz.lpg.mybatis.handler.CryptoTypeHandler;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -29,13 +30,13 @@ public class User {
     /**
      * 手机号码
      */
-    @TableField(value = "mobile")
+    @TableField(value = "mobile", typeHandler = CryptoTypeHandler.class)
     private String mobile;
 
     /**
      * 住址
      */
-    @TableField(value = "address")
+    @TableField(value = "address", typeHandler = CryptoTypeHandler.class)
     private String address;
 
     /**
