@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.common.collect.Lists;
 import com.hlqz.lpg.easyexcel.data.CylinderExcelData;
 import com.hlqz.lpg.easyexcel.listener.CylinderExcelReadListener;
+import com.hlqz.lpg.lanyang.service.LyService;
 import com.hlqz.lpg.model.dto.CylinderSearchDTO;
 import com.hlqz.lpg.model.dto.CylinderUploadDTO;
 import com.hlqz.lpg.model.entity.Cylinder;
@@ -33,6 +34,8 @@ public class CylinderService {
     @Resource
     private CylinderDAO cylinderDAO;
     @Resource
+    private LyService lyService;
+    @Resource
     private CylinderServiceHelper cylinderServiceHelper;
 
     public List<CylinderSearchVO> search(CylinderSearchDTO dto) {
@@ -45,6 +48,7 @@ public class CylinderService {
 
     public List<CylinderUploadVO> importFromExcel(CylinderUploadDTO dto) {
         final var files = dto.getFiles();
+        final var repair = dto.getRepair();
         final List<CylinderUploadVO> voList = Lists.newArrayListWithExpectedSize(files.size());
         for (var file : files) {
             final var vo = new CylinderUploadVO();
@@ -58,7 +62,7 @@ public class CylinderService {
                 continue;
             }
             // 处理 Excel
-            final var listener = new CylinderExcelReadListener(cylinderDAO);
+            final var listener = new CylinderExcelReadListener(cylinderDAO, lyService, repair);
             try {
                 EasyExcel.read(file.getInputStream(), CylinderExcelData.class, listener)
                     .sheet()

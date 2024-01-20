@@ -17,5 +17,10 @@ public class CylinderUploadDTO {
     /**
      * 上传文件列表
      */
-    public List<MultipartFile> files;
+    private List<MultipartFile> files;
+
+    /**
+     * 自动纠正重复数据
+     */
+    private Boolean repair;
 }

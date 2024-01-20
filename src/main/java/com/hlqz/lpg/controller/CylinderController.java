@@ -39,6 +39,7 @@ public class CylinderController extends BaseController{
     public ApiResult<List<CylinderUploadVO>> upload(@Valid CylinderUploadParam param) {
         final var dto = new CylinderUploadDTO();
         dto.setFiles(param.getFiles());
+        dto.setRepair(param.getRepair());
         return ApiResult.ok(cylinderService.importFromExcel(dto));
     }
 }

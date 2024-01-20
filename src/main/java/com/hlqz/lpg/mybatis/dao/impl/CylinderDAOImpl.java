@@ -22,16 +22,20 @@ public class CylinderDAOImpl extends MPJBaseServiceImpl<CylinderMapper, Cylinder
     }
 
     @Override
+    public Cylinder fetchBySerialNo(String serialNo) {
+        return lambdaQuery().eq(Cylinder::getSerialNo, serialNo)
+            .one();
+    }
+
+    @Override
     public Cylinder fetchByBarcode(String barcode) {
         return lambdaQuery().eq(Cylinder::getBarcode, barcode)
             .one();
     }
 
     @Override
-    public Cylinder fetchBySerialNoOrBarcode(String serialNo, String barcode) {
-        return lambdaQuery().eq(Cylinder::getSerialNo, serialNo)
-            .or()
-            .eq(Cylinder::getBarcode, barcode)
-            .one();
+    public boolean existsByBarcode(String barcode) {
+        return lambdaQuery().eq(Cylinder::getBarcode, barcode)
+            .exists();
     }
 }

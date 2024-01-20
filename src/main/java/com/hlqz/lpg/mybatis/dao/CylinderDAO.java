@@ -18,15 +18,20 @@ public interface CylinderDAO extends MPJBaseService<Cylinder> {
     IPage<Cylinder> fetchBarcodePageUsingLike(String barcode, IPage<Cylinder> page);
 
     /**
+     * 根据钢印号查询钢瓶信息
+     * @param serialNo 钢印号
+     */
+    Cylinder fetchBySerialNo(String serialNo);
+
+    /**
      * 根据气瓶条码查询钢瓶信息
      * @param barcode 气瓶条码
      */
     Cylinder fetchByBarcode(String barcode);
 
     /**
-     * 根据钢印号或气瓶条码查询钢瓶信息
-     * @param serialNo 钢印号
+     * 根据气瓶条码判断钢瓶信息是否存在
      * @param barcode 气瓶条码
      */
-    Cylinder fetchBySerialNoOrBarcode(String serialNo, String barcode);
+    boolean existsByBarcode(String barcode);
 }

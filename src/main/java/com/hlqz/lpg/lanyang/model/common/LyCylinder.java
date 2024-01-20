@@ -25,7 +25,7 @@ public class LyCylinder {
      * 钢印号
      */
     @JsonAlias({"VaseCode"})
-    private String cylinderNo;
+    private String serialNo;
 
     /**
      * 气瓶条码

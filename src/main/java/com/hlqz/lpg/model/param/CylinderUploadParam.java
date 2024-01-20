@@ -22,4 +22,10 @@ public class CylinderUploadParam {
     @NotEmpty
     @JsonProperty("files")
     private List<MultipartFile> files;
+
+    /**
+     * 自动纠正重复数据
+     */
+    @JsonProperty("repair")
+    private Boolean repair;
 }
