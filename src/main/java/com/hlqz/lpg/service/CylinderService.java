@@ -14,6 +14,7 @@ import com.hlqz.lpg.model.vo.CylinderSearchVO;
 import com.hlqz.lpg.model.vo.CylinderUploadVO;
 import com.hlqz.lpg.mybatis.dao.CylinderDAO;
 import com.hlqz.lpg.service.helper.CylinderServiceHelper;
+import com.hlqz.lpg.util.AssertionUtils;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
@@ -49,6 +50,8 @@ public class CylinderService {
     public List<CylinderUploadVO> importFromExcel(CylinderUploadDTO dto) {
         final var files = dto.getFiles();
         final var repair = dto.getRepair();
+        // 限制上传的文件个数
+        AssertionUtils.assertTrue(files.size() <= 5, "一次上传的文件个数不能超过【5】个");
         final List<CylinderUploadVO> voList = Lists.newArrayListWithExpectedSize(files.size());
         for (var file : files) {
             final var vo = new CylinderUploadVO();
