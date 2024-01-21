@@ -1,6 +1,7 @@
 package com.hlqz.lpg.lanyang.helper;
 
 import cn.hutool.core.codec.Base64;
+import cn.hutool.core.util.IdUtil;
 import com.hlqz.lpg.lanyang.model.dto.LyDeliveryDTO;
 import com.hlqz.lpg.lanyang.model.enums.LyOrderTypeEnum;
 import com.hlqz.lpg.lanyang.model.request.LyDeliveryParam;
@@ -53,6 +54,7 @@ public class LyHelper {
         param.setRemark("手持终端创建");
         param.setSyncTab(1);
         param.setDeliveryDate(deliveryDate);
+        param.setSerialNo(IdUtil.fastSimpleUUID());
         return param;
     }
 

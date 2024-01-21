@@ -108,18 +108,8 @@ public class LyService {
      * @param dto 钢瓶配送 DTO
      */
     public void delivery(LyDeliveryDTO dto) {
-        // 预配送, 获取 BID
         final var param = LyHelper.buildDeliveryParam(dto);
-        var paramMap = JsonUtils.toMap(JsonUtils.toJson(param));
-        final var prepareResponse = lyMApiService.delivery(paramMap);
-        final LyDeliveryResponse prepareDeliveryResponse = JsonUtils.fromJson(prepareResponse, LyDeliveryResponse.class);
-        AssertionUtils.assertNotNull(prepareDeliveryResponse, "兰洋系统预配送请求解析 JSON 失败");
-        AssertionUtils.assertEquals(prepareDeliveryResponse.getState(), "3",
-            StringUtils.defaultIfBlank(prepareDeliveryResponse.getMessage(), "兰洋系统预配送请求失败"));
-        final var serialNo = prepareDeliveryResponse.getData().getFirst().getSerialNo();
-        // 使用预配送的 BID, 再次配送
-        param.setSerialNo(serialNo);
-        paramMap = JsonUtils.toMap(JsonUtils.toJson(param));
+        final var paramMap = JsonUtils.toMap(JsonUtils.toJson(param));
         final var response = lyMApiService.delivery(paramMap);
         final LyDeliveryResponse deliveryResponse =
             JsonUtils.fromJson(response.substring(0, response.indexOf("<")), LyDeliveryResponse.class);
