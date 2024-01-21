@@ -29,7 +29,7 @@ public class LyDeliveryParam {
      * 客户编号
      */
     @JsonProperty("custNo")
-    private String crNo;
+    private Integer crNo;
 
     /**
      * 客户姓名

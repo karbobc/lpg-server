@@ -234,11 +234,11 @@ public class CylinderExcelReadListener implements ReadListener<CylinderExcelData
         try {
             // 钢印号一致, 气瓶条码不一致, 则去兰洋系统匹配条码对应的钢印号进行修正
             if (serialNoDuplicate) {
-                lyCylinderList = lyService.fetchByBarcodes(barcode1, barcode2);
+                lyCylinderList = lyService.fetchCylinderByBarcodes(barcode1, barcode2);
             }
             // 气瓶条码一致, 钢印号不一致, 则去兰洋系统匹配钢印号对应的气瓶条码进行修正
             if (barcodeDuplicate) {
-                lyCylinderList = lyService.fetchBySerialNos(serialNo1, serialNo2);
+                lyCylinderList = lyService.fetchCylinderBySerialNos(serialNo1, serialNo2);
             }
         } catch (Exception e) {
             log.error("CylinderExcelReadListener, 请求兰洋系统接口出现异常", e);

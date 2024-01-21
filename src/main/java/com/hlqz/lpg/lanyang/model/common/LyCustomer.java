@@ -31,7 +31,7 @@ public class LyCustomer {
      */
     @JsonProperty("cusNo")
     @JsonAlias({"CustNo"})
-    private String crNo;
+    private Integer crNo;
 
     /**
      * 客户姓名
