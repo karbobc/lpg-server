@@ -111,8 +111,9 @@ public class LyService {
         final var param = LyHelper.buildDeliveryParam(dto);
         final var paramMap = JsonUtils.toMap(JsonUtils.toJson(param));
         final var response = lyMApiService.delivery(paramMap);
-        final LyDeliveryResponse deliveryResponse =
-            JsonUtils.fromJson(response.substring(0, response.indexOf("<")), LyDeliveryResponse.class);
+        final var responseJsonBody = response.substring(0, response.indexOf("<"));
+        log.info("LyService, 兰洋系统配送接口请求成功, body: {}", responseJsonBody);
+        final LyDeliveryResponse deliveryResponse = JsonUtils.fromJson(responseJsonBody, LyDeliveryResponse.class);
         AssertionUtils.assertNotNull(deliveryResponse, "兰洋系统配送请求解析 JSON 失败");
         AssertionUtils.assertEquals(deliveryResponse.getState(), "1",
             StringUtils.defaultIfBlank(deliveryResponse.getMessage(), "兰洋系统配送请求失败"));
