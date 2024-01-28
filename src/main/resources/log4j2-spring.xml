@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Configuration xmlns="http://logging.apache.org/log4j/2.0/config">
+  <Properties>
+    <Property name="LOG_DIR">$${env:LOG_DIR:-logs}</Property>
+    <Property name="LOG_PATTERN">
+      %d{yyyy-MM-dd HH:mm:ss,SSS} %highlight{%5level} %style{%X{traceId}}{magenta} [%t] %style{%logger{36}}{cyan}: %msg%n
+    </Property>
+    <Property name="PROJECT_NAME">lpg</Property>
+  </Properties>
+  <Appenders>
+    <Console name="consoleAppender" target="SYSTEM_OUT">
+      <PatternLayout pattern="${LOG_PATTERN}" />
+    </Console>
+    <RollingRandomAccessFile name="rollingAppender"
+                             fileName="${LOG_DIR}/${PROJECT_NAME}.log"
+                             filePattern="${LOG_DIR}/${PROJECT_NAME}-%d{yyyy-MM-dd}_%i.log.gz">
+      <PatternLayout disableAnsi="true" pattern="${LOG_PATTERN}"/>
+      <Policies>
+        <OnStartupTriggeringPolicy />
+        <TimeBasedTriggeringPolicy />
+        <SizeBasedTriggeringPolicy size="128MB"/>
+      </Policies>
+      <DefaultRolloverStrategy max="15"/>
+    </RollingRandomAccessFile>
+  </Appenders>
+  <Loggers>
+    <Logger name="com.hlqz.lpg" level="INFO" />
+    <Root level="INFO">
+      <AppenderRef ref="consoleAppender" />
+      <AppenderRef ref="rollingAppender" />
+    </Root>
+  </Loggers>
+</Configuration>
