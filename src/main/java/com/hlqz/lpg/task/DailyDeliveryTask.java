@@ -5,23 +5,17 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.hlqz.lpg.lanyang.model.common.LyCustomer;
 import com.hlqz.lpg.lanyang.model.dto.LyDeliveryDTO;
 import com.hlqz.lpg.lanyang.model.dto.LySaveCustomerDTO;
-import com.hlqz.lpg.lanyang.service.LyService;
 import com.hlqz.lpg.model.dto.DeliveryWithUserAndCylinderDTO;
 import com.hlqz.lpg.model.entity.Cylinder;
 import com.hlqz.lpg.model.entity.User;
 import com.hlqz.lpg.model.enums.DeliveryStateEnum;
-import com.hlqz.lpg.mybatis.dao.DeliveryDAO;
 import com.hlqz.lpg.util.AssertionUtils;
-import com.hlqz.lpg.util.DateTimeUtils;
-import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 /**
@@ -30,34 +24,24 @@ import java.util.List;
  */
 @Slf4j
 @Component
-public class DailyDeliveryTask {
+public class DailyDeliveryTask extends AbstractTask {
 
     /**
      * 每次配送的批次大小
      */
     private static final int BATCH_SIZE = 20;
 
-    @Resource
-    private DeliveryDAO deliveryDAO;
-    @Resource
-    private LyService lyService;
-
     private DailyDeliveryTask() {
     }
 
     @Scheduled(cron = "0 0 */2 * * ?")
-    private void scheduler() {
-        final var df = DateTimeFormatter.ofPattern(DateTimeUtils.PATTERN_DATETIME);
-        log.info("DailyDeliveryTask, 执行配送任务开始, datetime: {}", LocalDateTime.now().format(df));
-        try {
-            execute();
-        } catch (Exception e) {
-            log.error("DailyDeliveryTask, 执行配送任务异常", e);
-        }
-        log.info("DailyDeliveryTask, 执行配送定时任务结束");
+    @Override
+    public void scheduler() {
+        super.scheduler();
     }
 
-    private void execute() {
+    @Override
+    public void execute() {
         // 查询未配送和配送失败的配送信息, 调用兰洋系统进行配送
         IPage<DeliveryWithUserAndCylinderDTO> page = new Page<>(1, BATCH_SIZE);
         page = deliveryDAO.fetchPageByStates(page, DeliveryStateEnum.NOT_STARTED);
