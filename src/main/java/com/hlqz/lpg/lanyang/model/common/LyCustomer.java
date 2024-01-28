@@ -41,11 +41,11 @@ public class LyCustomer {
     private String crName;
 
     /**
-     * 客户类型
+     * 客户类型, 1-居民用户
      */
     @JsonProperty("custType")
-    @JsonAlias({"TypeName"})
-    private String crType;
+    @JsonAlias({"CustType"})
+    private Integer crType;
 
     /**
      * 客户电话
@@ -69,11 +69,11 @@ public class LyCustomer {
     private String idNo;
 
     /**
-     * 证件类型
+     * 证件类型, 0-身份证
      */
     @JsonProperty("CardType")
-    @JsonAlias({"IDCardsTypeName"})
-    private String idType;
+    @JsonAlias({"CardType"})
+    private Integer idType;
 
     /**
      * 证件地址

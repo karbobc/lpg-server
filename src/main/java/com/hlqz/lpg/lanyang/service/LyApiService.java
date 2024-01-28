@@ -6,6 +6,7 @@ import com.hlqz.lpg.lanyang.interceptor.LyApiServiceInterceptor;
 import com.hlqz.lpg.lanyang.model.common.LyCustomer;
 import com.hlqz.lpg.lanyang.model.common.LyCylinder;
 import com.hlqz.lpg.lanyang.model.request.LyFetchByPageParam;
+import com.hlqz.lpg.lanyang.model.response.LyBaseResponse;
 import com.hlqz.lpg.lanyang.model.response.LyPageResponse;
 import retrofit2.http.Body;
 import retrofit2.http.POST;
@@ -25,6 +26,12 @@ public interface LyApiService {
      */
     @POST("BaseCustomer/LoadDataByPage")
     LyPageResponse<LyCustomer> fetchCustomer(@Body LyFetchByPageParam param);
+
+    /**
+     * 新增客户
+     */
+    @POST("BaseCustomer/Add")
+    LyBaseResponse saveCustomer(@Body LyCustomer param);
 
     /**
      * 分页查询钢瓶信息

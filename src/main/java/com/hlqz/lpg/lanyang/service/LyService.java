@@ -4,6 +4,9 @@ import com.hlqz.lpg.lanyang.helper.LyHelper;
 import com.hlqz.lpg.lanyang.model.common.LyCustomer;
 import com.hlqz.lpg.lanyang.model.common.LyCylinder;
 import com.hlqz.lpg.lanyang.model.dto.LyDeliveryDTO;
+import com.hlqz.lpg.lanyang.model.dto.LySaveCustomerDTO;
+import com.hlqz.lpg.lanyang.model.enums.LyOrderTypeEnum;
+import com.hlqz.lpg.lanyang.model.request.LyFetchByPageParam;
 import com.hlqz.lpg.lanyang.model.response.LyDeliveryResponse;
 import com.hlqz.lpg.lanyang.model.response.LyPageResponse;
 import com.hlqz.lpg.util.AssertionUtils;
@@ -83,6 +86,46 @@ public class LyService {
     }
 
     /**
+     * 根据自定义参数查询客户数据
+     * @param param 自定义参数
+     * @return 客户数据
+     */
+    public List<LyCustomer> fetchCustomerByParam(LyFetchByPageParam param) {
+        if (StringUtils.isNoneBlank(param.getSqlWhere())) {
+            param.setSqlWhere(LyHelper.buildEncryptedSqlWhere(param.getSqlWhere()));
+        }
+        LyPageResponse<LyCustomer> response = lyApiService.fetchCustomer(param);
+        AssertionUtils.assertNotNull(response, "接口请求异常");
+        if (CollectionUtils.isEmpty(response.getData())) {
+            return Collections.emptyList();
+        }
+        return response.getData();
+    }
+
+    /**
+     * 获取一个可用的客户号, 默认取 crNo >= 2w and <= 10w
+     * @return 可使用客户号
+     */
+    public Integer fetchAvailableCrNo() {
+        final var min = 2_0000;
+        final var max = 10_0000;
+        final var param = LyHelper.buildCustomerPageParam();
+        final var sqlWhere = StringUtils.join(
+            LyHelper.buildSqlWhereForGe("CustNo", min),
+            LyHelper.appendSqlWhereForLe("CustNo", max, "AND")
+        );
+        param.setSqlWhere(sqlWhere);
+        param.setSize(1);
+        param.setOrderBy("CustNo");
+        param.setOrderType(LyOrderTypeEnum.DESC);
+        final var result = fetchCustomerByParam(param);
+        if (CollectionUtils.isEmpty(result)) {
+            return min;
+        }
+        return result.getFirst().getCrNo() + 1;
+    }
+
+    /**
      * 根据客户姓名和手机号码查询客户数据
      * @param name 姓名
      * @param mobile 手机号码
@@ -94,13 +137,36 @@ public class LyService {
             LyHelper.buildSqlWhereForEq("CustName", name),
             LyHelper.appendSqlWhereForEq("Tel", mobile, "AND")
         );
-        param.setSqlWhere(LyHelper.buildEncryptedSqlWhere(sqlWhere));
-        LyPageResponse<LyCustomer> response = lyApiService.fetchCustomer(param);
-        AssertionUtils.assertNotNull(response, "接口请求异常");
-        if (CollectionUtils.isEmpty(response.getData())) {
-            return Collections.emptyList();
+        param.setSqlWhere(sqlWhere);
+        return fetchCustomerByParam(param);
+    }
+
+    /**
+     * 根据兰洋系统的客户号, 查询对应的客户数据
+     * @param crNo 客户号
+     * @return 客户数据
+     */
+    public LyCustomer fetchCustomerByCrNo(Integer crNo) {
+        final var param = LyHelper.buildCustomerPageParam();
+        final var sqlWhere = LyHelper.buildSqlWhereForEq("CustNo", crNo);
+        param.setSqlWhere(sqlWhere);
+        final var result = fetchCustomerByParam(param);
+        if (CollectionUtils.isEmpty(result)) {
+            return null;
         }
-        return response.getData();
+        return result.getFirst();
+    }
+
+    /**
+     * 新增客户信息
+     * @param dto 新增客户信息 DTO
+     */
+    public LyCustomer saveCustomer(LySaveCustomerDTO dto) {
+        final var param = LyHelper.buildSaveCustomerParam(dto);
+        final var response = lyApiService.saveCustomer(param);
+        AssertionUtils.assertNotNull(response, "接口请求异常");
+        AssertionUtils.assertTrue(response.getSuccess(), StringUtils.defaultIfBlank(response.getMessage(), "新增客户信息失败"));
+        return param;
     }
 
     /**

@@ -2,7 +2,9 @@ package com.hlqz.lpg.lanyang.helper;
 
 import cn.hutool.core.codec.Base64;
 import cn.hutool.core.util.IdUtil;
+import com.hlqz.lpg.lanyang.model.common.LyCustomer;
 import com.hlqz.lpg.lanyang.model.dto.LyDeliveryDTO;
+import com.hlqz.lpg.lanyang.model.dto.LySaveCustomerDTO;
 import com.hlqz.lpg.lanyang.model.enums.LyOrderTypeEnum;
 import com.hlqz.lpg.lanyang.model.request.LyDeliveryParam;
 import com.hlqz.lpg.lanyang.model.request.LyFetchByPageParam;
@@ -38,6 +40,19 @@ public class LyHelper {
         param.setSqlWhere(StringUtils.EMPTY);
         param.setOrderType(LyOrderTypeEnum.DESC);
         param.setOrderBy("EditTime");
+        return param;
+    }
+
+    public static LyCustomer buildSaveCustomerParam(LySaveCustomerDTO dto) {
+        final var param = new LyCustomer();
+        param.setCrNo(dto.getCrNo());
+        param.setCrName(dto.getName());
+        param.setMobile(dto.getMobile());
+        param.setAddress(dto.getAddress());
+        param.setCrType(1);
+        param.setIdType(0);
+        param.setCycle(60);
+        param.setSectionId(Long.valueOf(ConfigUtils.getLySectionId()));
         return param;
     }
 
@@ -83,7 +98,23 @@ public class LyHelper {
         return StringUtils.join(column, " = '", value, "'");
     }
 
+    public static String buildSqlWhereForGe(String column, Object value) {
+        return StringUtils.join(column, " >= '", value, "'");
+    }
+
+    public static String buildSqlWhereForLe(String column, Object value) {
+        return StringUtils.join(column, " <= '", value, "'");
+    }
+
     public static String appendSqlWhereForEq(String column, Object value, String keyword) {
         return StringUtils.join(" ", keyword, " ", column, " = '", value, "'");
+    }
+
+    public static String appendSqlWhereForGe(String column, Object value, String keyword) {
+        return StringUtils.join(" ", keyword, " ", column, " >= '", value, "'");
+    }
+
+    public static String appendSqlWhereForLe(String column, Object value, String keyword) {
+        return StringUtils.join(" ", keyword, " ", column, " <= '", value, "'");
     }
 }
