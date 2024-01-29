@@ -7,6 +7,9 @@ spring:
     url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}?sslmode=disable
     username: ${DB_USER}
     password: ${DB_PASSWORD}
+  threads:
+    virtual:
+      enabled: true
 
 retrofit:
   global-retry:
