@@ -3,7 +3,7 @@
   <Properties>
     <Property name="LOG_DIR">$${env:LOG_DIR:-logs}</Property>
     <Property name="LOG_PATTERN">
-      %d{yyyy-MM-dd HH:mm:ss,SSS} %highlight{%5level} %style{%X{traceId}}{magenta} [%t] %style{%logger{36}}{cyan}: %msg%n
+      %d{yyyy-MM-dd HH:mm:ss,SSS} %highlight{%5level} [%style{%X{traceId}}{magenta}] [%t] %style{%logger{36}}{cyan}: %msg%n
     </Property>
     <Property name="PROJECT_NAME">lpg</Property>
   </Properties>
