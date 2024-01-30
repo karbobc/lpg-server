@@ -1,19 +1,9 @@
 package com.hlqz.lpg.model.common;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.hlqz.lpg.model.enums.RcEnum;
-import com.hlqz.lpg.util.DateTimeUtils;
 import lombok.Data;
 import org.springframework.lang.NonNull;
-
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 
 /**
  * @author Karbob
@@ -39,40 +29,33 @@ public class ApiResult<T> {
     private String message;
 
     /**
+     * 请求 ID
+     */
+    private String requestId;
+
+    /**
      * 回传数据
      */
     private T data;
 
-    /**
-     * 接口响应时间, yyyy-MM-dd HH:mm:ss 格式
-     */
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    @JsonFormat(pattern = DateTimeUtils.PATTERN_DATETIME)
-    private LocalDateTime datetime;
-
-    /**
-     * 接口响应时间戳, 13 位
-     */
-    @JsonSerialize(using = ToStringSerializer.class)
-    private Long timestamp;
-
     public ApiResult() {
-        LocalDateTime now = LocalDateTime.now();
-        this.datetime = now;
-        this.timestamp = now.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
-        this.success = Boolean.TRUE;
     }
 
     public ApiResult(String code, String message) {
-        this();
         this.code = code;
         this.message = message;
+        this.success = Boolean.TRUE;
     }
 
     public ApiResult(String code, String message, Boolean success) {
-        this(code, message);
+        this.code = code;
+        this.message = message;
         this.success = success;
+    }
+
+    public ApiResult(String code, String message, Boolean success, String requestId) {
+        this(code, message, success);
+        this.requestId = requestId;
     }
 
     public ApiResult(String code, String message, T data) {
@@ -81,13 +64,16 @@ public class ApiResult<T> {
     }
 
     public ApiResult(@NonNull RcEnum rc) {
-        this(rc.getCode(), rc.getMessage());
-        this.success = rc == RcEnum.OK;
+        this(rc.getCode(), rc.getMessage(), rc == RcEnum.OK);
     }
 
     public ApiResult(@NonNull RcEnum rc, Boolean success) {
-        this(rc);
-        this.success = success;
+        this(rc.getCode(), rc.getMessage(), success);
+    }
+
+    public ApiResult(@NonNull RcEnum rc, Boolean success, String requestId) {
+        this(rc, success);
+        this.requestId = requestId;
     }
 
     public ApiResult(@NonNull RcEnum rc, T data) {
@@ -125,7 +111,17 @@ public class ApiResult<T> {
     }
 
     @NonNull
+    public static ApiResult<Void> error(String code, String message, String requestId) {
+        return new ApiResult<>(code, message, Boolean.FALSE, requestId);
+    }
+
+    @NonNull
     public static ApiResult<Void> error(@NonNull RcEnum rc) {
         return new ApiResult<>(rc, Boolean.FALSE);
+    }
+
+    @NonNull
+    public static ApiResult<Void> error(@NonNull RcEnum rc, String requestId) {
+        return new ApiResult<>(rc, Boolean.FALSE, requestId);
     }
 }
