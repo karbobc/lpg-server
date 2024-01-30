@@ -30,11 +30,11 @@ public abstract class AbstractTask {
     private static ExecutorService executor = null;
 
     @Resource
-    public LyService lyService;
+    protected LyService lyService;
     @Resource
-    public DeliveryDAO deliveryDAO;
+    protected DeliveryDAO deliveryDAO;
 
-    public ExecutorService getExecutor() {
+    protected ExecutorService getExecutor() {
         if (Objects.isNull(executor)) {
             synchronized (this) {
                 if (Objects.isNull(executor)) {
@@ -51,7 +51,7 @@ public abstract class AbstractTask {
         return executor;
     }
 
-    public void scheduler() {
+    protected void scheduler() {
         getExecutor().execute(() -> {
             final var traceId = IdUtil.fastSimpleUUID();
             MDC.put("traceId", traceId);
@@ -67,5 +67,5 @@ public abstract class AbstractTask {
         });
     }
 
-    public abstract void execute();
+    protected abstract void execute();
 }

@@ -36,12 +36,12 @@ public class DailyDeliveryTask extends AbstractTask {
 
     @Scheduled(cron = "0 0 */2 * * ?")
     @Override
-    public void scheduler() {
+    protected void scheduler() {
         super.scheduler();
     }
 
     @Override
-    public void execute() {
+    protected void execute() {
         // 查询未配送和配送失败的配送信息, 调用兰洋系统进行配送
         IPage<DeliveryWithUserAndCylinderDTO> page = new Page<>(1, BATCH_SIZE);
         page = deliveryDAO.fetchPageByStates(page, DeliveryStateEnum.NOT_STARTED);
