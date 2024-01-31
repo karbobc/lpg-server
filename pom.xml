@@ -93,6 +93,12 @@
     <dependency>
       <groupId>com.alibaba</groupId>
       <artifactId>log4j2-ttl-thread-context-map</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>com.alibaba</groupId>
+          <artifactId>transmittable-thread-local</artifactId>
+        </exclusion>
+      </exclusions>
       <version>1.4.0</version>
       <scope>runtime</scope>
     </dependency>
