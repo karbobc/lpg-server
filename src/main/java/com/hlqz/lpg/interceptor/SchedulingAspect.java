@@ -20,10 +20,10 @@ import org.springframework.stereotype.Component;
 public class SchedulingAspect {
 
     @Pointcut("execution(* com.hlqz.lpg.task.AbstractTask.execute(..))")
-    public void pointcut() {}
+    private void pointcut() {}
 
     @Around("pointcut()")
-    public Object around(ProceedingJoinPoint point) {
+    private Object around(ProceedingJoinPoint point) {
         final var traceId = IdUtil.fastSimpleUUID();
         MDC.put(MdcKeyConstants.TRACE_ID, traceId);
         log.info("scheduling start, class: {}", point.getTarget().getClass().getSimpleName());
