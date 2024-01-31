@@ -1,12 +1,14 @@
 package com.hlqz.lpg.interceptor;
 
+import com.hlqz.lpg.constant.MdcKeyConstants;
 import com.hlqz.lpg.exception.BizException;
 import com.hlqz.lpg.model.common.ApiResult;
 import com.hlqz.lpg.model.enums.RcEnum;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
+import org.slf4j.MDC;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -25,64 +27,69 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 public class ExceptionInterceptor {
 
-    @ExceptionHandler(BizException.class)
-    public ApiResult<Void> handleBizException(HttpServletRequest request, BizException e) {
-        log.warn("业务异常, JSESSIONID: {}", request.getSession().getId(), e);
-        return ApiResult.error(e.getCode(), e.getMessage());
-    }
-
-    @ExceptionHandler(NullPointerException.class)
-    public ApiResult<Void> handleBizException(HttpServletRequest request, NullPointerException e) {
-        log.error("空指针异常, JSESSIONID: {}", request.getSession().getId(), e);
-        return ApiResult.error(RcEnum.BIZ_ERROR.getCode(), e.getMessage());
-    }
-
-    @ExceptionHandler(MissingServletRequestParameterException.class)
-    public ApiResult<Void> handleMissingServletRequestParameterException(HttpServletRequest request,
-                                                                         MissingServletRequestParameterException e) {
-        log.warn("缺少请求参数: JSESSIONID: {}", request.getSession().getId(), e);
-        RcEnum codeMessage = RcEnum.REQUEST_PARAMETER_MISSING;
-        return ApiResult.error(codeMessage.getCode(), codeMessage.getMessage(e.getParameterName()));
-    }
-
-    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-    public ApiResult<Void> handleHttpRequestMethodNotSupportedException(HttpServletRequest request,
-                                                                        HttpRequestMethodNotSupportedException e) {
-        log.warn("请求方法不支持: JSESSIONID: {}", request.getSession().getId(), e);
-        RcEnum codeMessage = RcEnum.REQUEST_METHOD_NOT_SUPPORTED;
-        return ApiResult.error(codeMessage.getCode(), codeMessage.getMessage(e.getMethod()));
-    }
-
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ApiResult<Void> handleIllegalArgumentException(HttpServletRequest request, IllegalArgumentException e) {
-        log.warn("请求参数不合法, JSESSIONID: {}", request.getSession().getId(), e);
-        return ApiResult.error(RcEnum.REQUEST_PARAMETER_NOT_VALID);
-    }
-
-    @ExceptionHandler(value = {MethodArgumentNotValidException.class, ConstraintViolationException.class})
-    public ApiResult<Void> handleValidationException(HttpServletRequest request, Exception e) {
-        log.warn("参数校验失败, JSESSIONID: {}", request.getSession().getId(), e);
-        // 转化错误信息
-        String errorMessage;
-        if (e instanceof MethodArgumentNotValidException e1) {
-            errorMessage = e1.getFieldErrors()
-                .stream()
-                .map(o -> StringUtils.join(o.getField(), ": ", o.getDefaultMessage()))
-                .collect(Collectors.joining("; "));
-        } else if (e instanceof ConstraintViolationException e2) {
-            errorMessage = e2.getConstraintViolations()
-                .stream()
-                .map(o -> StringUtils.join(o.getPropertyPath().toString(), ": ", o.getMessage()))
-                .collect(Collectors.joining("; "));
-        } else {
-            errorMessage = e.getMessage();
+    @ExceptionHandler({
+        BizException.class,
+        NullPointerException.class,
+        MissingServletRequestParameterException.class,
+        HttpRequestMethodNotSupportedException.class,
+        IllegalArgumentException.class,
+        MethodArgumentNotValidException.class,
+        ConstraintViolationException.class,
+        Throwable.class,
+    })
+    public ApiResult<Void> handleNormalException(Throwable e) {
+        final var traceId = MDC.get(MdcKeyConstants.TRACE_ID);
+        final var startTime = NumberUtils.toLong(MDC.get(MdcKeyConstants.REQUEST_START_TIME));
+        final var endTime = System.currentTimeMillis();
+        final var cost = endTime - startTime;
+        final ApiResult<Void> result;
+        switch (e) {
+            case BizException ex -> {
+                log.warn("全局异常捕获, 业务异常, cost: {}ms, error: ", cost, ex);
+                result = ApiResult.error(ex.getCode(), ex.getMessage(), traceId);
+            }
+            case NullPointerException ex ->  {
+                log.error("全局异常捕获, 空指针异常, cost: {}ms, error: ", cost, ex);
+                result = ApiResult.error(RcEnum.BIZ_ERROR.getCode(), ex.getMessage(), traceId);
+            }
+            case MissingServletRequestParameterException ex -> {
+                log.warn("全局异常捕获, 缺少请求参数, cost: {}ms, error: ", cost, ex);
+                final var rc = RcEnum.REQUEST_PARAMETER_MISSING;
+                result = ApiResult.error(rc.getCode(), rc.getMessage(ex.getParameterName()), traceId);
+            }
+            case HttpRequestMethodNotSupportedException ex -> {
+                log.warn("全局异常捕获, 请求方法不支持, cost: {}ms, error: ", cost, ex);
+                final var rc = RcEnum.REQUEST_METHOD_NOT_SUPPORTED;
+                result = ApiResult.error(rc.getCode(), rc.getMessage(ex.getMethod()), traceId);
+            }
+            case IllegalArgumentException ex -> {
+                log.warn("全局异常捕获, 请求参数不合法, cost: {}ms, error: ", cost, ex);
+                result = ApiResult.error(RcEnum.REQUEST_PARAMETER_NOT_VALID, traceId);
+            }
+            case MethodArgumentNotValidException ex -> {
+                log.warn("全局异常捕获, 参数校验失败, cost: {}ms, error: ", cost, ex);
+                final var message = ex.getFieldErrors()
+                    .stream()
+                    .map(o -> StringUtils.join(o.getField(), ": ", o.getDefaultMessage()))
+                    .collect(Collectors.joining("; "));
+                final var rc = RcEnum.REQUEST_PARAMETER_NOT_VALID;
+                return ApiResult.error(rc.getCode(), message, traceId);
+            }
+            case ConstraintViolationException ex -> {
+                log.warn("全局异常捕获, 参数校验失败, cost: {}ms, error: ", cost, ex);
+                final var message = ex.getConstraintViolations()
+                    .stream()
+                    .map(o -> StringUtils.join(o.getPropertyPath().toString(), ": ", o.getMessage()))
+                    .collect(Collectors.joining("; "));
+                final var rc = RcEnum.REQUEST_PARAMETER_NOT_VALID;
+                return ApiResult.error(rc.getCode(), message, traceId);
+            }
+            default -> {
+                log.error("全局异常捕获, 未处理异常, cost: {}ms, error: ", cost, e);
+                result = ApiResult.error(RcEnum.UNKNOWN_ERROR, traceId);
+            }
         }
-        return ApiResult.error(RcEnum.REQUEST_PARAMETER_NOT_VALID.getCode(), errorMessage);
-    }
-
-    @ExceptionHandler(Throwable.class)
-    public ApiResult<Void> handleException(HttpServletRequest request, Throwable e) {
-        log.error("全局异常捕获, 未处理异常, JSESSIONID: {}", request.getSession().getId(), e);
-        return ApiResult.error(RcEnum.UNKNOWN_ERROR);
+        MDC.clear();
+        return result;
     }
 }
