@@ -31,15 +31,7 @@ public class DailyDeliveryTask extends AbstractTask {
      */
     private static final int BATCH_SIZE = 20;
 
-    private DailyDeliveryTask() {
-    }
-
     @Scheduled(cron = "0 0 */2 * * ?")
-    @Override
-    protected void scheduler() {
-        super.scheduler();
-    }
-
     @Override
     protected void execute() {
         // 查询未配送和配送失败的配送信息, 调用兰洋系统进行配送
