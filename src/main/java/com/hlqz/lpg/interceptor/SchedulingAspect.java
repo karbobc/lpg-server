@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class SchedulingAspect {
 
-    @Pointcut("execution(* com.hlqz.lpg.task.AbstractTask.execute(..))")
+    @Pointcut("execution(protected * com.hlqz.lpg.task.AbstractTask.execute(..))")
     private void pointcut() {}
 
     @Around("pointcut()")
