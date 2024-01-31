@@ -1,5 +1,6 @@
 package com.hlqz.lpg.interceptor;
 
+import cn.hutool.extra.spring.SpringUtil;
 import com.hlqz.lpg.constant.MdcKeyConstants;
 import com.hlqz.lpg.exception.BizException;
 import com.hlqz.lpg.model.common.ApiResult;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import java.util.stream.Collectors;
 
@@ -35,13 +37,14 @@ public class ExceptionInterceptor {
         IllegalArgumentException.class,
         MethodArgumentNotValidException.class,
         ConstraintViolationException.class,
+        MaxUploadSizeExceededException.class,
         Throwable.class,
     })
     public ApiResult<Void> handleNormalException(Throwable e) {
         final var traceId = MDC.get(MdcKeyConstants.TRACE_ID);
         final var startTime = NumberUtils.toLong(MDC.get(MdcKeyConstants.REQUEST_START_TIME));
         final var endTime = System.currentTimeMillis();
-        final var cost = endTime - startTime;
+        final var cost = startTime != 0 ? endTime - startTime : 0;
         final ApiResult<Void> result;
         switch (e) {
             case BizException ex -> {
@@ -79,10 +82,17 @@ public class ExceptionInterceptor {
                 log.warn("全局异常捕获, 参数校验失败, cost: {}ms, error: ", cost, ex);
                 final var message = ex.getConstraintViolations()
                     .stream()
-                    .map(o -> StringUtils.join(o.getPropertyPath().toString(), ": ", o.getMessage()))
+                    .map(o -> StringUtils.join( o.getPropertyPath().toString(), ": ", o.getMessage()))
                     .collect(Collectors.joining("; "));
                 final var rc = RcEnum.REQUEST_PARAMETER_NOT_VALID;
                 return ApiResult.error(rc.getCode(), message, traceId);
+            }
+            case MaxUploadSizeExceededException ex -> {
+                log.warn("全局异常捕获, 上传文件大小超出限制, cost: {}ms, error: ", cost, ex);
+                final var rc = RcEnum.MAXIMUM_UPLOAD_SIZE_EXCEEDED;
+                final var maxFileSize = SpringUtil.getProperty("spring.servlet.multipart.max-file-size");
+                final var maxRequestSize = SpringUtil.getProperty("spring.servlet.multipart.max-request-size");
+                return ApiResult.error(rc.getCode(), rc.getMessage(maxFileSize, maxRequestSize), traceId);
             }
             default -> {
                 log.error("全局异常捕获, 未处理异常, cost: {}ms, error: ", cost, e);

@@ -44,6 +44,11 @@ public enum RcEnum {
      * 请求参数不合法
      */
     REQUEST_PARAMETER_NOT_VALID("10003", "参数校验失败!"),
+
+    /**
+     * 上传文件大小超过限制
+     */
+    MAXIMUM_UPLOAD_SIZE_EXCEEDED("10004", "文件大小超过 '{}' 或所有文件大小之和超过 '{}'"),
     ;
 
     /**
