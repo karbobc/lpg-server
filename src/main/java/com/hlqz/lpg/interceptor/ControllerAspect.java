@@ -8,17 +8,21 @@ import com.hlqz.lpg.util.JsonUtils;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 
-import java.io.UnsupportedEncodingException;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author Karbob
@@ -37,7 +41,7 @@ public class ControllerAspect {
     }
 
     @Before("pointcut()")
-    private void before() {
+    private void before(JoinPoint point) {
         // 存储请求开始时间
         MDC.put(MdcKeyConstants.REQUEST_START_TIME, String.valueOf(System.currentTimeMillis()));
         // 请求内容处理
@@ -46,16 +50,21 @@ public class ControllerAspect {
         final var method = request.getMethod();
         final var url = request.getRequestURL();
         final var queryString = StringUtils.defaultIfBlank(request.getQueryString(), "[Empty Query]");
-        // TODO 过滤 multipart file
-        var payload = "[Empty Content]";
-        if (request.getContentLength() > 0) {
-            try {
-                // 超过 8192 字节的入参进行截断
-                payload = new String(request.getContentAsByteArray(), 0, Math.min(request.getContentLength(), 8192), request.getCharacterEncoding());
-            } catch (UnsupportedEncodingException e) {
-                payload = "[Unsupported Content]";
-            }
-        }
+        // multipart file 特殊处理
+        final var args = Stream.of(point.getArgs())
+            .map(o -> {
+                if (o instanceof MultipartFile file) {
+                    return StringUtils.join("file: ", file.getOriginalFilename(), "(", file.getSize(), " byte)");
+                }
+                if (o instanceof MultipartFile[] files) {
+                    return StringUtils.join("files: ", Stream.of(files)
+                        .map(file -> StringUtils.join(file.getOriginalFilename(), "(", file.getSize(), " byte)"))
+                        .collect(Collectors.joining("|")));
+                }
+                return o;
+            })
+            .toList();
+        final var payload = CollectionUtils.isEmpty(args) ? "[Empty Body]" : JsonUtils.toJson(args);
         final var traceId = StringUtils.defaultIfBlank(request.getHeader(HeaderConstants.X_REQUEST_ID), IdUtil.fastSimpleUUID());
         // 存储链路 ID
         MDC.put(MdcKeyConstants.TRACE_ID, traceId);
