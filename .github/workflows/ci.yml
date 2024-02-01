@@ -31,7 +31,7 @@ jobs:
         run: |
           echo "PNPM_STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
 
-      - name: Setup pnpm cache
+      - name: Set up pnpm cache
         uses: actions/cache@v4
         with:
           path: ${{ env.PNPM_STORE_PATH }}
@@ -44,3 +44,30 @@ jobs:
           cd lpg-web
           pnpm install --frozen-lockfile
           pnpm build
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: lpg-web-artifact-${{ runner.os }}
+          path: dist
+
+  build-for-lpg:
+    name: Build lpg
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+        with:
+          path: lpg
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: "temurin"
+          java-version: "21"
+          cache: "maven"
+
+      - name: Build with Maven
+        run: |
+          cd lpg
+          mvn clear package -DskipTests -U
