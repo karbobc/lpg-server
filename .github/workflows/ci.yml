@@ -76,10 +76,10 @@ jobs:
       - name: Set up Maven cache
         uses: actions/cache@v4
         with:
-          path: ~/.m2
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
-            ${{ runner.os }}-m2-
+            ${{ runner.os }}-maven-
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -87,4 +87,4 @@ jobs:
           name: lpg-web-artifact-${{ runner.os }}
           path: |
             target/*.jar
-            ~/.m2/com/alibaba/transmittable-thread-local/**/*.jar
+            ~/.m2/repository/com/alibaba/transmittable-thread-local/**/*.jar
