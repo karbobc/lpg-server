@@ -39,8 +39,8 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
 
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Package
-        run: pnpm build
+      - name: Install dependencies and build
+        run: |
+          cd lpg-web
+          pnpm install --frozen-lockfile
+          pnpm build
