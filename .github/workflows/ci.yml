@@ -6,15 +6,14 @@ on:
 jobs:
   build-for-lpg-web:
     name: Build lpg-web
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout lpg-web
         uses: actions/checkout@v4
         with:
           repository: ${{ github.repository_owner }}/lpg-web
+          token: ${{ secrets.GH_PAT }}
           ref: master
-          persist-credentials: false
-          fetch-depth: 0
           path: lpg-web
 
       - name: Set up Node.js
@@ -43,3 +42,5 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Package
+        run: pnpm build
