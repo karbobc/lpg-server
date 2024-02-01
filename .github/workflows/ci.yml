@@ -48,10 +48,6 @@ jobs:
           name: lpg-web-artifact-${{ runner.os }}
           path: dist
 
-      - run: |
-          pwd
-          ls
-
   build-for-lpg:
     name: Build lpg
     runs-on: ubuntu-latest
@@ -68,9 +64,10 @@ jobs:
 
       - name: Build with Maven
         run: |
-          cd lpg
           mvn versions:set -B -DremoveSnapshot -DgenerateBackupPoms=false
           mvn clean package -B -DskipTests
+          cp target/*.jar .
+          cp ~/.m2/repository/com/alibaba/transmittable-thread-local/**/*.jar .
 
       - run: |
           pwd
@@ -89,8 +86,7 @@ jobs:
         with:
           name: lpg-artifact-${{ runner.os }}
           path: |
-            target/*.jar
-            ~/.m2/repository/com/alibaba/transmittable-thread-local/**/*.jar
+            *.jar
 
       - run: |
           pwd
