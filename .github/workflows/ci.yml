@@ -1,11 +1,13 @@
 name: CI
 
 on:
+  push:
+    tags: [ "v*" ]
   workflow_dispatch:
 
 jobs:
   build-for-lpg-web:
-    name: Build lpg-web
+    name: Build for lpg-web
     runs-on: ubuntu-latest
     steps:
       - name: Checkout lpg-web
@@ -49,7 +51,7 @@ jobs:
           path: dist
 
   build-for-lpg:
-    name: Build lpg
+    name: Build for lpg
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source code
@@ -69,10 +71,6 @@ jobs:
           cp target/*.jar .
           cp ~/.m2/repository/com/alibaba/transmittable-thread-local/**/*.jar .
 
-      - run: |
-          pwd
-          ls
-
       - name: Set up Maven cache
         uses: actions/cache@v4
         with:
@@ -88,6 +86,57 @@ jobs:
           path: |
             *.jar
 
-      - run: |
-          pwd
-          ls
+  build-for-docker:
+    name: Build for Docker
+    runs-on: ubuntu-latest
+    needs:
+      - build-for-lpg-web
+      - build-for-lpg
+    steps:
+      - name: Cache Docker layers
+        uses: actions/cache@v4
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+
+      - name: Docker meta
+        uses: docker/metadata-action@v5
+        id: docker_meta
+        with:
+          images: |
+            ${{ secrets.DOCKER_HUB_USERNAME }}/lpg
+            ghcr.io/${{ github.repository_owner }}/lpg
+          tags: |
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        id: docker_buildx
+
+      - name: Download lpg-web artifact
+        uses: actions/download-artifact@v4
+        with:
+          pattern: lpg-web-artifact-*
+          path: web
+
+      - name: Download lpg artifact
+        uses: actions/download-artifact@v4
+        with:
+          pattern: lpg-artifact-*
+          path: server
+
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          platforms: linux/amd64,linux/arm/v7,linux/arm64,linux/386
+          push: ${{ startsWith(github.event.ref, 'refs/tags/v') }}
+          tags: ${{ steps.docker_meta.outputs.tags }}
+          labels: ${{ steps.docker_meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha
