@@ -1,4 +1,4 @@
-FROM eclipse-temurin:21-jdk-alpine
+FROM --platform=$TARGETPLATFORM eclipse-temurin:21-jdk-alpine
 
 LABEL maintainer="Karbob <karbobc@gmail.com>"
 
