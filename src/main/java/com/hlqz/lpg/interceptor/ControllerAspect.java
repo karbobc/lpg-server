@@ -21,6 +21,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 
+import java.util.Arrays;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -64,7 +65,8 @@ public class ControllerAspect {
                 return o;
             })
             .toList();
-        final var payload = CollectionUtils.isEmpty(args) ? "[Empty Body]" : JsonUtils.toJson(args);
+        // final var payload = CollectionUtils.isEmpty(args) ? "[Empty Body]" : JsonUtils.toJson(args);
+        final var payload = CollectionUtils.isEmpty(args) ? "[Empty Body]" : Arrays.toString(args.toArray());
         final var traceId = StringUtils.defaultIfBlank(request.getHeader(HeaderConstants.X_REQUEST_ID), IdUtil.fastSimpleUUID());
         // 存储链路 ID
         MDC.put(MdcKeyConstants.TRACE_ID, traceId);

@@ -1,45 +1,103 @@
-name: CI
+name: LPG Server CI
 
 on:
+  push:
+    tags: [ "v*" ]
   workflow_dispatch:
 
 jobs:
-  build-for-lpg-web:
-    name: Build lpg-web
-    runs-on: self-hosted
+  build-lpg-server:
+    name: Build LGP Server
+    runs-on: ubuntu-latest
     steps:
-      - name: Checkout lpg-web
+      - name: Checkout source code
         uses: actions/checkout@v4
-        with:
-          repository: ${{ github.repository_owner }}/lpg-web
-          ref: master
-          persist-credentials: false
-          fetch-depth: 0
-          path: lpg-web
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
+      - name: Set up JDK
+        uses: actions/setup-java@v4
         with:
-          node-version: "18"
+          distribution: "temurin"
+          java-version: "21"
+          cache: "maven"
 
-      - name: Set up pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: "8"
-          run_install: false
-
-      - name: Get pnpm store directory
+      - name: Build with Maven
         run: |
-          echo "PNPM_STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+          mvn versions:set -B -DremoveSnapshot -DgenerateBackupPoms=false
+          mvn clean package -B -DskipTests
+          cp target/*.jar app.jar
+          cp ~/.m2/repository/com/alibaba/transmittable-thread-local/**/*.jar ttl.jar
 
-      - name: Setup pnpm cache
+      - name: Set up Maven cache
         uses: actions/cache@v4
         with:
-          path: ${{ env.PNPM_STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
-            ${{ runner.os }}-pnpm-store-
+            ${{ runner.os }}-maven-
 
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: lpg-artifact-${{ runner.os }}
+          path: |
+            app.jar
+            ttl.jar
 
+  docker-build-and-push:
+    name: Docker build and push
+    runs-on: ubuntu-latest
+    needs:
+      - build-lpg-server
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        id: docker_buildx
+
+      - name: Docker meta
+        uses: docker/metadata-action@v5
+        id: docker_meta
+        with:
+          images: |
+            ${{ secrets.DOCKER_HUB_USERNAME }}/lpg-server
+            ghcr.io/${{ github.repository_owner }}/lpg-server
+          tags: |
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+            type=ref,event=branch
+            type=ref,event=pr
+            type=sha
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          pattern: lpg-artifact-*
+          path: libs
+
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          platforms: linux/amd64,linux/arm64/v8,linux/ppc64le,linux/s390x
+          push: ${{ startsWith(github.event.ref, 'refs/tags/v') }}
+          tags: ${{ steps.docker_meta.outputs.tags }}
+          labels: ${{ steps.docker_meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha
