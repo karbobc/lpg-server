@@ -65,8 +65,16 @@ public class ControllerAspect {
                 return o;
             })
             .toList();
-        // final var payload = CollectionUtils.isEmpty(args) ? "[Empty Body]" : JsonUtils.toJson(args);
-        final var payload = CollectionUtils.isEmpty(args) ? "[Empty Body]" : Arrays.toString(args.toArray());
+        String payload;
+        if (CollectionUtils.isNotEmpty(args)) {
+            try {
+                payload = JsonUtils.toJson(args);
+            } catch (Exception e) {
+                payload = Arrays.toString(args.toArray());
+            }
+        } else {
+            payload = "[Empty Body]";
+        }
         final var traceId = StringUtils.defaultIfBlank(request.getHeader(HeaderConstants.X_REQUEST_ID), IdUtil.fastSimpleUUID());
         // 存储链路 ID
         MDC.put(MdcKeyConstants.TRACE_ID, traceId);
