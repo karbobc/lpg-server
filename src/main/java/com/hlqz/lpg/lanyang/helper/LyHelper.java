@@ -49,6 +49,7 @@ public class LyHelper {
         param.setCrName(dto.getName());
         param.setMobile(dto.getMobile());
         param.setAddress(dto.getAddress());
+        param.setIdNo(StringUtils.EMPTY);
         param.setCrType(1);
         param.setIdType(0);
         param.setCycle(60);
