@@ -10,9 +10,9 @@
   </parent>
   <groupId>com.hlqz</groupId>
   <artifactId>lpg</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.0.2-SNAPSHOT</version>
   <name>LPG</name>
-  <description>LPG</description>
+  <description>LPG Server</description>
   <properties>
     <java.version>21</java.version>
     <apache-commons-lang3.version>3.13.0</apache-commons-lang3.version>
