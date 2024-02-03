@@ -108,6 +108,7 @@
       <version>${springdoc.version}</version>
     </dependency>
 
+    <!-- disruptor -->
     <dependency>
       <groupId>com.lmax</groupId>
       <artifactId>disruptor</artifactId>
