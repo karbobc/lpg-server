@@ -12,6 +12,7 @@
       <PatternLayout pattern="${LOG_PATTERN}" />
     </Console>
     <RollingRandomAccessFile name="rollingAppender"
+                             immediateFlush="false"
                              fileName="${LOG_DIR}/${PROJECT_NAME}.log"
                              filePattern="${LOG_DIR}/${PROJECT_NAME}-%d{yyyy-MM-dd}_%i.log">
       <PatternLayout disableAnsi="true" pattern="${LOG_PATTERN}"/>

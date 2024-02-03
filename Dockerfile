@@ -8,6 +8,7 @@ ENV JVM_OPTS="-Xmx512m \
               -Xms512m \
               -XX:+UseZGC \
               -XX:+ZGenerational \
+              -Dlog4j2.contextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector \
               -javaagent:/app/ttl.jar \
               -Xbootclasspath/a:/app/ttl.jar"
 
