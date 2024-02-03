@@ -49,7 +49,7 @@ public class ControllerAspect {
         final var request = httpServletRequest instanceof ContentCachingRequestWrapper ?
             (ContentCachingRequestWrapper) httpServletRequest : new ContentCachingRequestWrapper(httpServletRequest);
         final var method = request.getMethod();
-        final var url = request.getRequestURL();
+        final var path = request.getServletPath();
         final var queryString = StringUtils.defaultIfBlank(request.getQueryString(), "[Empty Query]");
         // multipart file 特殊处理
         final var args = Stream.of(point.getArgs())
@@ -78,7 +78,7 @@ public class ControllerAspect {
         final var traceId = StringUtils.defaultIfBlank(request.getHeader(HeaderConstants.X_REQUEST_ID), IdUtil.fastSimpleUUID());
         // 存储链路 ID
         MDC.put(MdcKeyConstants.TRACE_ID, traceId);
-        log.info("request start, {} {}, query: {}, payload: {}", method, url, queryString, payload);
+        log.info("request start, {} {}, query: {}, payload: {}", method, path, queryString, payload);
     }
 
     @AfterReturning(value = "pointcut()", returning = "object")
