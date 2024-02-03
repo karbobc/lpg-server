@@ -23,29 +23,35 @@ public class NtfyUtils {
 
     private static NtfyApiService ntfy;
 
+    private static Thread.Builder.OfVirtual vt;
+
     private NtfyUtils() {
     }
 
     @PostConstruct
     public void init() {
         ntfy = SpringUtil.getBean(NtfyApiService.class);
+        vt = Thread.ofVirtual()
+            .name("ntfy-", 1);
     }
 
-    public static void sendMessage(String message) {
+    public static void sendMessage(final String message) {
         sendMessage(DEFAULT_TOPIC, message);
     }
 
-    public static void sendMessage(String topic, String message) {
+    public static void sendMessage(final String topic, final String message) {
         sendMessage(topic, null, message);
     }
 
-    public static void sendMessage(String topic, String title, String message) {
-        AssertionUtils.assertNotBlank(topic, "topic不允许为空");
-        final var param = new NtfySendParam();
-        param.setTopic(topic);
-        param.setTitle(title);
-        param.setMessage(message);
-        final var result = ntfy.send(param);
-        log.info("NtfyUtils, sendMessage, result: {}", result);
+    public static void sendMessage(final String topic, final String title, final String message) {
+        vt.start(() -> {
+            AssertionUtils.assertNotBlank(topic, "topic不允许为空");
+            final var param = new NtfySendParam();
+            param.setTopic(topic);
+            param.setTitle(title);
+            param.setMessage(message);
+            final var result = ntfy.send(param);
+            log.info("NtfyUtils, sendMessage, result: {}", result);
+        });
     }
 }
