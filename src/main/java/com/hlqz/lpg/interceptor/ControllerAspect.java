@@ -37,7 +37,8 @@ public class ControllerAspect {
     @Resource
     private HttpServletRequest httpServletRequest;
 
-    @Pointcut("execution(public * com.hlqz.lpg.controller.*.*(..))")
+    @Pointcut("execution(public * com.hlqz.lpg.controller.*.*(..))" +
+        "&& !execution(* com.hlqz.lpg.controller.HeartbeatController.*(..))")
     private void pointcut() {
     }
 

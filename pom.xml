@@ -10,7 +10,7 @@
   </parent>
   <groupId>com.hlqz</groupId>
   <artifactId>lpg</artifactId>
-  <version>0.0.2-SNAPSHOT</version>
+  <version>0.0.3-SNAPSHOT</version>
   <name>LPG</name>
   <description>LPG Server</description>
   <properties>
@@ -27,6 +27,7 @@
     <mybatis-plus-join.version>1.4.9</mybatis-plus-join.version>
     <springdoc.version>2.2.0</springdoc.version>
     <disruptor.version>3.4.4</disruptor.version>
+    <flyway.version>10.7.1</flyway.version>
   </properties>
 
   <dependencies>
@@ -99,6 +100,14 @@
       <groupId>com.github.yulichang</groupId>
       <artifactId>mybatis-plus-join-boot-starter</artifactId>
       <version>${mybatis-plus-join.version}</version>
+    </dependency>
+
+    <!-- migrations -->
+    <dependency>
+      <groupId>org.flywaydb</groupId>
+      <artifactId>flyway-database-postgresql</artifactId>
+      <version>${flyway.version}</version>
+      <scope>runtime</scope>
     </dependency>
 
     <!-- springdoc -->
