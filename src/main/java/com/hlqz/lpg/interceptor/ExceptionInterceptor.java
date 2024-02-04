@@ -10,12 +10,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.MDC;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.stream.Collectors;
 
@@ -34,6 +36,7 @@ public class ExceptionInterceptor {
         NullPointerException.class,
         MissingServletRequestParameterException.class,
         HttpRequestMethodNotSupportedException.class,
+        NoResourceFoundException.class,
         IllegalArgumentException.class,
         MethodArgumentNotValidException.class,
         ConstraintViolationException.class,
@@ -64,6 +67,12 @@ public class ExceptionInterceptor {
                 log.warn("全局异常捕获, 请求方法不支持, cost: {}ms, error: ", cost, ex);
                 final var rc = RcEnum.REQUEST_METHOD_NOT_SUPPORTED;
                 result = ApiResult.error(rc.getCode(), rc.getMessage(ex.getMethod()), traceId);
+            }
+            case NoResourceFoundException ex -> {
+                log.warn("全局异常捕获, 请求资源不存在, cost: {}ms, error: ", cost, ex);
+                final var code = String.valueOf(HttpStatus.NOT_FOUND.value());
+                final var message = HttpStatus.NOT_FOUND.getReasonPhrase();
+                result = ApiResult.error(code, message, traceId);
             }
             case IllegalArgumentException ex -> {
                 log.warn("全局异常捕获, 请求参数不合法, cost: {}ms, error: ", cost, ex);
