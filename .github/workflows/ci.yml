@@ -25,7 +25,7 @@ jobs:
         run: |
           mvn versions:set -B -DremoveSnapshot -DgenerateBackupPoms=false
           mvn clean package -B -DskipTests
-          cp target/*.jar app.jar
+          cp target/*.jar lpg-server.jar
           cp ~/.m2/repository/com/alibaba/transmittable-thread-local/**/*.jar ttl.jar
 
       - name: Set up Maven cache
@@ -41,7 +41,7 @@ jobs:
         with:
           name: lpg-server-artifact-${{ runner.os }}
           path: |
-            app.jar
+            lpg-server.jar
             ttl.jar
 
   docker-build-and-push:
