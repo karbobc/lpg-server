@@ -17,6 +17,6 @@ ENV JVM_OPTS="-Xmx512m \
 VOLUME /app/logs
 EXPOSE 12312
 
-HEALTHCHECK --interval=60s --timeout=10s CMD ["/healtcheck.sh"]
+HEALTHCHECK --interval=60s --timeout=10s CMD ["/healthcheck.sh"]
 
 ENTRYPOINT ["/entrypoint.sh"]

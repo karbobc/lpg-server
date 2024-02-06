@@ -18,6 +18,20 @@ spring:
   flyway:
     locations: classpath:migrations/{vendor}
     table: t_migrations
+  mail:
+    host: ${SMTP_HOST}
+    port: ${SMTP_PORT}
+    from: ${SMTP_FROM}
+    from-name: ${SMTP_FROM_NAME}
+    username: ${SMTP_USERNAME}
+    password: ${SMTP_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
 
 retrofit:
   global-retry:
