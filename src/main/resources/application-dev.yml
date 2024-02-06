@@ -4,3 +4,9 @@ springdoc:
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+spring:
+  mail:
+    properties:
+      mail:
+        debug: true
