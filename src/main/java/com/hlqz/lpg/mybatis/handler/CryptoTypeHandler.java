@@ -20,7 +20,7 @@ public class CryptoTypeHandler extends BaseTypeHandler<String> {
             ps.setNull(i, Types.VARCHAR);
             return;
         }
-        ps.setString(i, AesUtils.encrypt(parameter, ConfigUtils.getDatabaseAESKey()));
+        ps.setString(i, AesUtils.encrypt(parameter, ConfigUtils.getDatabaseAesKey()));
     }
 
     @Override
@@ -29,7 +29,7 @@ public class CryptoTypeHandler extends BaseTypeHandler<String> {
         if (Objects.isNull(result)) {
             return null;
         }
-        return AesUtils.decrypt(result, ConfigUtils.getDatabaseAESKey());
+        return AesUtils.decrypt(result, ConfigUtils.getDatabaseAesKey());
     }
 
     @Override
@@ -38,7 +38,7 @@ public class CryptoTypeHandler extends BaseTypeHandler<String> {
         if (Objects.isNull(result)) {
             return null;
         }
-        return AesUtils.decrypt(result, ConfigUtils.getDatabaseAESKey());
+        return AesUtils.decrypt(result, ConfigUtils.getDatabaseAesKey());
     }
 
     @Override
@@ -47,6 +47,6 @@ public class CryptoTypeHandler extends BaseTypeHandler<String> {
         if (Objects.isNull(result)) {
             return null;
         }
-        return AesUtils.decrypt(result, ConfigUtils.getDatabaseAESKey());
+        return AesUtils.decrypt(result, ConfigUtils.getDatabaseAesKey());
     }
 }

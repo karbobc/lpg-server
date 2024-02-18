@@ -10,7 +10,7 @@ import cn.hutool.extra.spring.SpringUtil;
  */
 public class ConfigUtils {
 
-    public static String getDatabaseAESKey() {
+    public static String getDatabaseAesKey() {
         return SpringUtil.getProperty("DB_AES_KEY");
     }
 
