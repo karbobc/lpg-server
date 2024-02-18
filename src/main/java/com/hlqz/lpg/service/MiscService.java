@@ -3,6 +3,7 @@ package com.hlqz.lpg.service;
 import cn.hutool.core.lang.Validator;
 import cn.hutool.core.util.PhoneUtil;
 import cn.hutool.core.util.StrUtil;
+import com.hlqz.lpg.constant.RegexConstants;
 import com.hlqz.lpg.model.dto.EnrollDTO;
 import com.hlqz.lpg.model.entity.Delivery;
 import com.hlqz.lpg.model.entity.User;
@@ -11,6 +12,7 @@ import com.hlqz.lpg.mybatis.dao.CylinderDAO;
 import com.hlqz.lpg.mybatis.dao.DeliveryDAO;
 import com.hlqz.lpg.mybatis.dao.UserDAO;
 import com.hlqz.lpg.util.AssertionUtils;
+import com.hlqz.lpg.util.RegexUtils;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -40,6 +42,7 @@ public class MiscService {
         final var barcode = dto.getBarcode();
         AssertionUtils.assertTrue(Validator.isChineseName(realName), "请输入正确的姓名!!!");
         AssertionUtils.assertTrue(PhoneUtil.isMobile(mobile) || PhoneUtil.isTel(mobile), "请输入正确的手机号码!!!");
+        AssertionUtils.assertTrue(RegexUtils.matches(RegexConstants.USER_ADDRESS, address), "请输入正确的住址: XX县XX镇XX村XX屯");
         // 查询用户和气瓶
         final var cylinder = cylinderDAO.fetchByBarcode(barcode);
         AssertionUtils.assertNotNull(cylinder, "气瓶条码不存在!!!");
