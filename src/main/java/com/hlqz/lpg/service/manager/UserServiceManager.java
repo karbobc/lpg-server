@@ -1,4 +1,4 @@
-package com.hlqz.lpg.service.helper;
+package com.hlqz.lpg.service.manager;
 
 import org.springframework.stereotype.Service;
 
@@ -7,5 +7,5 @@ import org.springframework.stereotype.Service;
  * @date 2024-01-06
  */
 @Service
-public class UserServiceHelper {
+public class UserServiceManager {
 }

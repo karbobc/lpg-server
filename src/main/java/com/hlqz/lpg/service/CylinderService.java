@@ -13,7 +13,7 @@ import com.hlqz.lpg.model.enums.RcEnum;
 import com.hlqz.lpg.model.vo.CylinderSearchVO;
 import com.hlqz.lpg.model.vo.CylinderUploadVO;
 import com.hlqz.lpg.mybatis.dao.CylinderDAO;
-import com.hlqz.lpg.service.helper.CylinderServiceHelper;
+import com.hlqz.lpg.service.manager.CylinderServiceManager;
 import com.hlqz.lpg.util.AssertionUtils;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -37,14 +37,14 @@ public class CylinderService {
     @Resource
     private LyService lyService;
     @Resource
-    private CylinderServiceHelper cylinderServiceHelper;
+    private CylinderServiceManager cylinderServiceManager;
 
     public List<CylinderSearchVO> search(CylinderSearchDTO dto) {
         final var barcode = dto.getBarcode().trim().toUpperCase();
         final var queryPage = new Page<Cylinder>(1, 5);
         final var result = cylinderDAO.fetchBarcodePageUsingLike(barcode, queryPage);
         final List<Cylinder> cylinderList = result.getRecords();
-        return cylinderServiceHelper.convertToCylinderSearchVO(cylinderList);
+        return cylinderServiceManager.convertToCylinderSearchVO(cylinderList);
     }
 
     public List<CylinderUploadVO> importFromExcel(CylinderUploadDTO dto) {

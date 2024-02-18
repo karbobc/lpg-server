@@ -1,4 +1,4 @@
-package com.hlqz.lpg.service.helper;
+package com.hlqz.lpg.service.manager;
 
 import com.hlqz.lpg.model.entity.Cylinder;
 import com.hlqz.lpg.model.vo.CylinderSearchVO;
@@ -13,7 +13,7 @@ import java.util.List;
  * @date 2024-01-09
  */
 @Service
-public class CylinderServiceHelper {
+public class CylinderServiceManager {
 
     public List<CylinderSearchVO> convertToCylinderSearchVO(List<Cylinder> cylinderList) {
         if (CollectionUtils.isEmpty(cylinderList)) {

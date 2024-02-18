@@ -9,9 +9,9 @@ import java.nio.charset.StandardCharsets;
  * @author Karbob
  * @date 2024-01-06
  */
-public class AESUtils {
+public class AesUtils {
 
-    private AESUtils() {
+    private AesUtils() {
     }
 
     /**
