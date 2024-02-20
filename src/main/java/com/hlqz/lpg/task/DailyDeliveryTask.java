@@ -1,5 +1,6 @@
 package com.hlqz.lpg.task;
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.hlqz.lpg.lanyang.model.common.LyCustomer;
@@ -9,6 +10,7 @@ import com.hlqz.lpg.model.dto.DeliveryWithUserAndCylinderDTO;
 import com.hlqz.lpg.model.entity.Cylinder;
 import com.hlqz.lpg.model.entity.User;
 import com.hlqz.lpg.model.enums.DeliveryStateEnum;
+import com.hlqz.lpg.service.util.NtfyUtils;
 import com.hlqz.lpg.util.AssertionUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
@@ -68,6 +70,8 @@ public class DailyDeliveryTask extends AbstractTask {
             log.warn("DailyDeliveryTask, 该用户信息在兰洋系统中存在多个, name: {}, mobile: {}", user.getRealName(), user.getMobile());
             delivery.setState(DeliveryStateEnum.CRASH);
             AssertionUtils.assertTrue(deliveryDAO.updateById(delivery), "更新配送状态失败");
+            NtfyUtils.sendMessage(StrUtil.format("配送失败, 该用户信息在兰洋系统中存在多个:\n姓名: {}\n手机号码: {}\n气瓶条码: {}",
+                user.getRealName(), user.getMobile(), cylinder.getBarcode()));
             return;
         }
         // 如果兰洋系统不存在该客户, 先新增一个客户, 再进行配送
