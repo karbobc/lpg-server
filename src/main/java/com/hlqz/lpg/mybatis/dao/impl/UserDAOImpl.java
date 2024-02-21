@@ -4,6 +4,8 @@ import com.github.yulichang.base.MPJBaseServiceImpl;
 import com.hlqz.lpg.model.entity.User;
 import com.hlqz.lpg.mybatis.dao.UserDAO;
 import com.hlqz.lpg.mybatis.mapper.UserMapper;
+import com.hlqz.lpg.util.AesUtils;
+import com.hlqz.lpg.util.ConfigUtils;
 import org.springframework.stereotype.Service;
 
 /**
@@ -16,7 +18,7 @@ public class UserDAOImpl extends MPJBaseServiceImpl<UserMapper, User> implements
     @Override
     public User fetchByRealNameAndMobile(String realName, String mobile) {
         return lambdaQuery().eq(User::getRealName, realName)
-            .eq(User::getMobile, mobile)
+            .eq(User::getMobile, AesUtils.encrypt(mobile, ConfigUtils.getDatabaseAesKey()))
             .one();
     }
 }
