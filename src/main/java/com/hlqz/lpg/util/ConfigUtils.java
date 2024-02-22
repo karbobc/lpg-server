@@ -26,6 +26,14 @@ public class ConfigUtils {
         return SpringUtil.getProperty("LY_SECTION_ID");
     }
 
+    public static String getLyMinCrNo() {
+        return SpringUtil.getProperty("LY_MIN_CR_NO");
+    }
+
+    public static String getLyMaxCrNo() {
+        return SpringUtil.getProperty("LY_Max_CR_NO");
+    }
+
     public static String getNtfyUsername() {
         return SpringUtil.getProperty("NTFY_USERNAME");
     }
