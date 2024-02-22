@@ -10,6 +10,7 @@ import com.hlqz.lpg.lanyang.model.request.LyFetchByPageParam;
 import com.hlqz.lpg.lanyang.model.response.LyDeliveryResponse;
 import com.hlqz.lpg.lanyang.model.response.LyPageResponse;
 import com.hlqz.lpg.util.AssertionUtils;
+import com.hlqz.lpg.util.ConfigUtils;
 import com.hlqz.lpg.util.JsonUtils;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -107,8 +108,8 @@ public class LyService {
      * @return 可使用客户号
      */
     public Integer fetchAvailableCrNo() {
-        final var min = 2_0000;
-        final var max = 10_0000;
+        final var min = ConfigUtils.getLyMinCrNo();
+        final var max = ConfigUtils.getLyMaxCrNo();
         final var param = LyHelper.buildCustomerPageParam();
         final var sqlWhere = StringUtils.join(
             LyHelper.buildSqlWhereForGe("CustNo", min),
@@ -120,7 +121,7 @@ public class LyService {
         param.setOrderType(LyOrderTypeEnum.DESC);
         final var result = fetchCustomerByParam(param);
         if (CollectionUtils.isEmpty(result)) {
-            return min;
+            return Integer.valueOf(min);
         }
         return result.getFirst().getCrNo() + 1;
     }
