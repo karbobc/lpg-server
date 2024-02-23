@@ -11,5 +11,5 @@ public interface RegexConstants {
     /**
      * 用户住址
      */
-    Pattern USER_ADDRESS = Pattern.compile(".+县.+[镇乡].+(村|社区).+[屯街区路].*?");
+    Pattern USER_ADDRESS = Pattern.compile(".+县.+[镇乡].+(村|社区).+[屯街区路巷].*?");
 }
