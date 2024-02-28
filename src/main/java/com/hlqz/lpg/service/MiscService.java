@@ -40,9 +40,9 @@ public class MiscService {
         final var mobile = StrUtil.cleanBlank(dto.getMobile());
         final var address = StrUtil.cleanBlank(dto.getAddress());
         final var barcode = dto.getBarcode();
-        AssertionUtils.assertTrue(Validator.isChineseName(realName), "请输入正确的姓名!!!");
-        AssertionUtils.assertTrue(PhoneUtil.isMobile(mobile) || PhoneUtil.isTel(mobile), "请输入正确的手机号码!!!");
-        AssertionUtils.assertTrue(RegexUtils.matches(RegexConstants.USER_ADDRESS, address), "请输入正确的住址: XX县XX镇XX村XX屯");
+        AssertionUtils.assertTrue(Validator.isChineseName(realName), "请输入正确的姓名");
+        AssertionUtils.assertTrue(PhoneUtil.isMobile(mobile) || PhoneUtil.isTel(mobile), "请输入正确的手机号码");
+        AssertionUtils.assertTrue(RegexUtils.matches(RegexConstants.USER_ADDRESS, address), "请输入正确的住址");
         // 查询用户和气瓶
         final var cylinder = cylinderDAO.fetchByBarcode(barcode);
         AssertionUtils.assertNotNull(cylinder, "气瓶条码不存在!!!");
