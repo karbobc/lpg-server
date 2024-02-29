@@ -45,7 +45,7 @@ public class MiscService {
         AssertionUtils.assertTrue(RegexUtils.matches(RegexConstants.USER_ADDRESS, address), "请输入正确的住址");
         // 查询用户和气瓶
         final var cylinder = cylinderDAO.fetchByBarcode(barcode);
-        AssertionUtils.assertNotNull(cylinder, "气瓶条码不存在!!!");
+        AssertionUtils.assertNotNull(cylinder, "气瓶条码不存在");
         var user = userDAO.fetchByRealNameAndMobile(realName, mobile);
         if (Objects.isNull(user)) {
             user = new User();
