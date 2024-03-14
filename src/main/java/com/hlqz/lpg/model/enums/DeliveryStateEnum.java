@@ -31,7 +31,12 @@ public enum DeliveryStateEnum {
     /**
      * 配送失败
      */
-    CRASH(2);
+    CRASH(2),
+
+    /**
+     * 人工处理
+     */
+    MANUAL(3);
 
     @JsonValue
     @EnumValue
