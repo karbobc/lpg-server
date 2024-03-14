@@ -58,6 +58,7 @@ public class MiscService {
         // 配送信息表中, 一个用户可以对应多个不同的气瓶条码, 但是状态不能是未配送或配送失败的
         // 一个气瓶条码也可以对应多个用户, 对应多个用户的时候, 最多只能有一个未配送或配送失败的, 剩下的全部是配送成功的
         if (deliveryDAO.existsByUserIdAndBarcodeAndStates(user.getId(), barcode, DeliveryStateEnum.NOT_STARTED, DeliveryStateEnum.CRASH)) {
+            log.warn("MiscService, 重复配送, userId: {}, name: {}, mobile: {}, address: {}", user.getId(), realName, mobile, address);
             return;
         }
         // 保存配送信息
