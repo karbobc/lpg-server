@@ -11,7 +11,7 @@ import jakarta.servlet.http.HttpServletResponse;
 public class BaseController {
 
     @Resource
-    private HttpServletRequest request;
+    protected HttpServletRequest request;
     @Resource
-    private HttpServletResponse response;
+    protected HttpServletResponse response;
 }
