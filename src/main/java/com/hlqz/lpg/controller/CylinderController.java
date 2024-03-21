@@ -23,7 +23,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/cylinder")
-public class CylinderController extends BaseController{
+public class CylinderController extends BaseController {
 
     @Resource
     private CylinderService cylinderService;
