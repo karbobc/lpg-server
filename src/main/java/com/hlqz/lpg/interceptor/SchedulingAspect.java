@@ -1,7 +1,9 @@
 package com.hlqz.lpg.interceptor;
 
 import cn.hutool.core.util.IdUtil;
+import cn.hutool.core.util.StrUtil;
 import com.hlqz.lpg.constant.MdcKeyConstants;
+import com.hlqz.lpg.service.util.NtfyUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -33,6 +35,7 @@ public class SchedulingAspect {
             return result;
         } catch (Throwable e) {
             log.error("scheduling error, ", e);
+            NtfyUtils.sendMessage(StrUtil.format("scheduling error, traceId: {}", traceId));
         } finally {
             MDC.clear();
         }

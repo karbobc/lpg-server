@@ -10,3 +10,7 @@ spring:
     properties:
       mail:
         debug: true
+
+retrofit:
+  global-log:
+    log-strategy: body

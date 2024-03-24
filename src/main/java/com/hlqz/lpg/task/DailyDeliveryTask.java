@@ -54,6 +54,8 @@ public class DailyDeliveryTask extends AbstractTask {
                     delivery(data);
                 } catch (Exception e) {
                     log.error("DailyDeliveryTask, 配送异常, data: {}", data, e);
+                    NtfyUtils.sendMessage(StrUtil.format("配送异常, name: {}, barcode: {}, error: {}",
+                        data.getUser().getRealName(), data.getCylinder().getBarcode(), e.getMessage()));
                 }
             }
         }
