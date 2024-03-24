@@ -34,5 +34,13 @@ spring:
             required: true
 
 retrofit:
+  global-log:
+    log-strategy: basic
   global-retry:
     enable: true
+    interval-ms: 3000
+    max-retries: 3
+  global-timeout:
+    connect-timeout-ms: 3_000
+    read-timeout-ms: 60_000
+    write-timeout-ms: 60_000
