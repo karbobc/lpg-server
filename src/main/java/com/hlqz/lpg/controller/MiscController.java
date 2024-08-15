@@ -2,14 +2,13 @@ package com.hlqz.lpg.controller;
 
 import com.hlqz.lpg.model.common.ApiResult;
 import com.hlqz.lpg.model.dto.EnrollDTO;
+import com.hlqz.lpg.model.dto.LyUploadResultDTO;
 import com.hlqz.lpg.model.param.EnrollParam;
+import com.hlqz.lpg.model.vo.LyUploadResultVO;
 import com.hlqz.lpg.service.MiscService;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author Karbob
@@ -31,5 +30,12 @@ public class MiscController extends BaseController {
         dto.setBarcode(param.getBarcode());
         miscService.enroll(dto);
         return ApiResult.ok();
+    }
+
+    @GetMapping("/ly/upload/result")
+    public ApiResult<LyUploadResultVO> fetchUploadResult(@RequestParam String barcode) {
+        final var dto = new LyUploadResultDTO();
+        dto.setBarcode(barcode);
+        return ApiResult.ok(miscService.fetchUploadResult(dto));
     }
 }

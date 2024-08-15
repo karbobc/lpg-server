@@ -2,6 +2,7 @@ package com.hlqz.lpg.lanyang.model.common;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.hlqz.lpg.lanyang.model.enums.LyCylinderPositionTypeEnum;
+import com.hlqz.lpg.lanyang.model.enums.LyCylinderUploadStateEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -55,7 +56,7 @@ public class LyCylinder {
      * 上传状态
      */
     @JsonAlias({"UpLoadFlag"})
-    private String uploadState;
+    private LyCylinderUploadStateEnum uploadState;
 
     /**
      * 上传结果

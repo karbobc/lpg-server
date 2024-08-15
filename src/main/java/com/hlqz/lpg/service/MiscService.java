@@ -4,17 +4,23 @@ import cn.hutool.core.lang.Validator;
 import cn.hutool.core.util.PhoneUtil;
 import cn.hutool.core.util.StrUtil;
 import com.hlqz.lpg.constant.RegexConstants;
+import com.hlqz.lpg.lanyang.model.enums.LyCylinderUploadStateEnum;
+import com.hlqz.lpg.lanyang.service.LyService;
 import com.hlqz.lpg.model.dto.EnrollDTO;
+import com.hlqz.lpg.model.dto.LyUploadResultDTO;
 import com.hlqz.lpg.model.entity.Delivery;
 import com.hlqz.lpg.model.entity.User;
 import com.hlqz.lpg.model.enums.DeliveryStateEnum;
+import com.hlqz.lpg.model.vo.LyUploadResultVO;
 import com.hlqz.lpg.mybatis.dao.CylinderDAO;
 import com.hlqz.lpg.mybatis.dao.DeliveryDAO;
 import com.hlqz.lpg.mybatis.dao.UserDAO;
 import com.hlqz.lpg.util.AssertionUtils;
+import com.hlqz.lpg.util.JsonUtils;
 import com.hlqz.lpg.util.RegexUtils;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
@@ -33,6 +39,8 @@ public class MiscService {
     private CylinderDAO cylinderDAO;
     @Resource
     private DeliveryDAO deliveryDAO;
+    @Resource
+    private LyService lyService;
 
     public void enroll(EnrollDTO dto) {
         // 参数校验
@@ -66,5 +74,30 @@ public class MiscService {
         delivery.setUserId(user.getId());
         delivery.setCylinderId(cylinder.getId());
         deliveryDAO.save(delivery);
+    }
+
+    public LyUploadResultVO fetchUploadResult(LyUploadResultDTO dto) {
+        final var barcode = dto.getBarcode();
+        final var lyCylinderList = lyService.fetchCylinderByBarcodes(barcode);
+        AssertionUtils.assertNotEmpty(lyCylinderList, "未查询到钢瓶信息");
+        final var lyCylinder = lyCylinderList.getFirst();
+        final var vo = new LyUploadResultVO();
+        vo.setBarcode(lyCylinder.getBarcode());
+        vo.setSerialNo(lyCylinder.getSerialNo());
+        if (lyCylinder.getUploadState() == LyCylinderUploadStateEnum.UPLOADED) {
+            vo.setResult("已上传");
+            return vo;
+        }
+        if (StringUtils.isBlank(lyCylinder.getUploadResult())) {{
+            vo.setResult("上传返回空白，可能图片缺失");
+            return vo;
+        }}
+        try {
+            final var uploadResult = JsonUtils.toMap(lyCylinder.getUploadResult(), String.class);
+            vo.setResult(uploadResult.get("Value"));
+        } catch (Exception e) {
+            vo.setResult(lyCylinder.getUploadResult());
+        }
+        return vo;
     }
 }
