@@ -22,7 +22,7 @@
     <easyexcel.version>3.3.4</easyexcel.version>
     <transmittable-thread-local.version>2.14.5</transmittable-thread-local.version>
     <log4j2-ttl-thread-context-map.version>1.4.0</log4j2-ttl-thread-context-map.version>
-    <retrofit-spring-boot.version>3.0.3</retrofit-spring-boot.version>
+    <retrofit-spring-boot.version>3.1.3</retrofit-spring-boot.version>
     <mybatis-plus.version>3.5.7</mybatis-plus.version>
     <mybatis-plus-join.version>1.4.11</mybatis-plus-join.version>
     <springdoc.version>2.4.0</springdoc.version>
