@@ -24,7 +24,7 @@
     <log4j2-ttl-thread-context-map.version>1.4.0</log4j2-ttl-thread-context-map.version>
     <retrofit-spring-boot.version>3.0.3</retrofit-spring-boot.version>
     <mybatis-plus.version>3.5.7</mybatis-plus.version>
-    <mybatis-plus-join.version>1.4.11</mybatis-plus-join.version>
+    <mybatis-plus-join.version>1.4.13</mybatis-plus-join.version>
     <springdoc.version>2.4.0</springdoc.version>
     <disruptor.version>3.4.4</disruptor.version>
     <flyway.version>10.7.1</flyway.version>
