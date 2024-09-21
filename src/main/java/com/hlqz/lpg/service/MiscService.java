@@ -6,10 +6,11 @@ import cn.hutool.core.util.StrUtil;
 import com.hlqz.lpg.constant.RegexConstants;
 import com.hlqz.lpg.lanyang.model.enums.LyCylinderUploadStateEnum;
 import com.hlqz.lpg.lanyang.service.LyService;
+import com.hlqz.lpg.model.convert.CylinderConvert;
+import com.hlqz.lpg.model.convert.DeliveryConvert;
+import com.hlqz.lpg.model.convert.UserConvert;
 import com.hlqz.lpg.model.dto.EnrollDTO;
 import com.hlqz.lpg.model.dto.LyUploadResultDTO;
-import com.hlqz.lpg.model.entity.Delivery;
-import com.hlqz.lpg.model.entity.User;
 import com.hlqz.lpg.model.enums.DeliveryStateEnum;
 import com.hlqz.lpg.model.vo.LyUploadResultVO;
 import com.hlqz.lpg.mybatis.dao.CylinderDAO;
@@ -51,15 +52,18 @@ public class MiscService {
         AssertionUtils.assertTrue(Validator.isChineseName(realName), "请输入正确的姓名");
         AssertionUtils.assertTrue(PhoneUtil.isMobile(mobile) || PhoneUtil.isTel(mobile), "请输入正确的手机号码");
         AssertionUtils.assertTrue(RegexUtils.matches(RegexConstants.USER_ADDRESS, address), "请输入正确的住址");
-        // 查询用户和气瓶
-        final var cylinder = cylinderDAO.fetchByBarcode(barcode);
-        AssertionUtils.assertNotNull(cylinder, "气瓶条码不存在");
+        // 查询钢瓶档案, 本地数据库不存在, 则查询兰洋系统
+        var cylinder = cylinderDAO.fetchByBarcode(barcode);
+        if (Objects.isNull(cylinder)) {
+            final var lyCylinder = lyService.fetchCylinderByBarcodes(barcode);
+            AssertionUtils.assertNotEmpty(lyCylinder, "气瓶条码不存在");
+            cylinder = CylinderConvert.from(lyCylinder.getFirst());
+            cylinderDAO.save(cylinder);
+        }
+        // 查询用户数据
         var user = userDAO.fetchByRealNameAndMobile(realName, mobile);
         if (Objects.isNull(user)) {
-            user = new User();
-            user.setRealName(realName);
-            user.setMobile(mobile);
-            user.setAddress(address);
+            user = UserConvert.from(dto);
             userDAO.save(user);
         }
         // 重复提交保证接口幂等
@@ -70,9 +74,7 @@ public class MiscService {
             return;
         }
         // 保存配送信息
-        final var delivery = new Delivery();
-        delivery.setUserId(user.getId());
-        delivery.setCylinderId(cylinder.getId());
+        final var delivery = DeliveryConvert.from(user, cylinder);
         deliveryDAO.save(delivery);
     }
 

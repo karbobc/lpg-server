@@ -6,6 +6,7 @@ import com.google.common.collect.Lists;
 import com.hlqz.lpg.easyexcel.data.CylinderExcelData;
 import com.hlqz.lpg.easyexcel.listener.CylinderExcelReadListener;
 import com.hlqz.lpg.lanyang.service.LyService;
+import com.hlqz.lpg.model.convert.CylinderConvert;
 import com.hlqz.lpg.model.dto.CylinderSearchDTO;
 import com.hlqz.lpg.model.dto.CylinderUploadDTO;
 import com.hlqz.lpg.model.entity.Cylinder;
@@ -13,7 +14,6 @@ import com.hlqz.lpg.model.enums.RcEnum;
 import com.hlqz.lpg.model.vo.CylinderSearchVO;
 import com.hlqz.lpg.model.vo.CylinderUploadVO;
 import com.hlqz.lpg.mybatis.dao.CylinderDAO;
-import com.hlqz.lpg.service.manager.CylinderServiceManager;
 import com.hlqz.lpg.util.AssertionUtils;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -36,15 +36,13 @@ public class CylinderService {
     private CylinderDAO cylinderDAO;
     @Resource
     private LyService lyService;
-    @Resource
-    private CylinderServiceManager cylinderServiceManager;
 
     public List<CylinderSearchVO> search(CylinderSearchDTO dto) {
         final var barcode = dto.getBarcode().trim().toUpperCase();
         final var queryPage = new Page<Cylinder>(1, 5);
         final var result = cylinderDAO.fetchBarcodePageUsingLike(barcode, queryPage);
         final List<Cylinder> cylinderList = result.getRecords();
-        return cylinderServiceManager.convertToCylinderSearchVO(cylinderList);
+        return CylinderConvert.toVO(cylinderList);
     }
 
     public List<CylinderUploadVO> importFromExcel(CylinderUploadDTO dto) {
