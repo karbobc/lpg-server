@@ -10,7 +10,7 @@
   </parent>
   <groupId>com.hlqz</groupId>
   <artifactId>lpg</artifactId>
-  <version>0.2.6-SNAPSHOT</version>
+  <version>0.2.7-SNAPSHOT</version>
   <name>LPG</name>
   <description>LPG Server</description>
   <properties>
