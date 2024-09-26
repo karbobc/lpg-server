@@ -27,7 +27,7 @@
     <mybatis-plus-join.version>1.4.13</mybatis-plus-join.version>
     <springdoc.version>2.6.0</springdoc.version>
     <disruptor.version>4.0.0</disruptor.version>
-    <flyway.version>10.18.0</flyway.version>
+    <flyway.version>10.18.2</flyway.version>
   </properties>
 
   <dependencies>
