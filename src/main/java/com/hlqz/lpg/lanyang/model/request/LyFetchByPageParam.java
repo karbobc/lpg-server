@@ -34,6 +34,7 @@ public class LyFetchByPageParam {
      */
     @JsonProperty("sqlWhere")
     private String sqlWhere;
+
     /**
      * 排序字段
      */

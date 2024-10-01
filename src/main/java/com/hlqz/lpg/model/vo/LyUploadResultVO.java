@@ -1,8 +1,11 @@
 package com.hlqz.lpg.model.vo;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 /**
  * @author Karbob
@@ -10,6 +13,7 @@ import lombok.NoArgsConstructor;
  */
 @Data
 @NoArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class LyUploadResultVO {
 
     /**
@@ -29,4 +33,10 @@ public class LyUploadResultVO {
      */
     @JsonProperty("result")
     private String result;
+
+    /**
+     * 客户信息
+     */
+    @JsonProperty("customers")
+    private List<LyUploadResultCustomerVO> customers;
 }
