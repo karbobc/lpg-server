@@ -1,5 +1,7 @@
 package com.hlqz.lpg.lanyang.service;
 
+import com.google.common.collect.Sets;
+import com.hlqz.lpg.constant.RegexConstants;
 import com.hlqz.lpg.lanyang.helper.LyHelper;
 import com.hlqz.lpg.lanyang.model.common.LyCustomer;
 import com.hlqz.lpg.lanyang.model.common.LyCylinder;
@@ -7,6 +9,7 @@ import com.hlqz.lpg.lanyang.model.dto.LyDeliveryDTO;
 import com.hlqz.lpg.lanyang.model.dto.LySaveCustomerDTO;
 import com.hlqz.lpg.lanyang.model.enums.LyOrderTypeEnum;
 import com.hlqz.lpg.lanyang.model.request.LyFetchByPageParam;
+import com.hlqz.lpg.lanyang.model.request.LyTraceParam;
 import com.hlqz.lpg.lanyang.model.response.LyDeliveryResponse;
 import com.hlqz.lpg.lanyang.model.response.LyPageResponse;
 import com.hlqz.lpg.util.AssertionUtils;
@@ -18,10 +21,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * @author Karbob
@@ -33,9 +33,10 @@ public class LyService {
 
     @Resource
     private LyApiService lyApiService;
-
     @Resource
     private LyMApiService lyMApiService;
+    @Resource
+    private LyCApiService lyCApiService;
 
     /**
      * 根据 SQL 条件查询钢瓶数据, 并限制数据返回的个数
@@ -143,6 +144,18 @@ public class LyService {
     }
 
     /**
+     * 根据客户姓名查询对应客户数据
+     * @param names
+     * @return
+     */
+    public List<LyCustomer> fetchCustomerByNames(String... names) {
+        final var param = LyHelper.buildCustomerPageParam();
+        final var sqlWhere = LyHelper.buildSqlWhereForIn("CustName", Arrays.asList(names));
+        param.setSqlWhere(sqlWhere);
+        return fetchCustomerByParam(param);
+    }
+
+    /**
      * 根据兰洋系统的客户号, 查询对应的客户数据
      * @param crNo 客户号
      * @return 客户数据
@@ -184,5 +197,22 @@ public class LyService {
         AssertionUtils.assertNotNull(deliveryResponse, "兰洋系统配送请求解析 JSON 失败");
         AssertionUtils.assertEquals(deliveryResponse.getState(), "1",
             StringUtils.defaultIfBlank(deliveryResponse.getMessage(), "兰洋系统配送请求失败"));
+    }
+
+    /**
+     * 根据钢瓶 ID 获取对应溯源客户姓名
+     * @param cylinderId 钢瓶 ID
+     * @return 客户姓名集合
+     */
+    public Set<String> fetchTraceCustomerNameSet(String cylinderId) {
+        final var param = new LyTraceParam(cylinderId, 1);
+        final var paramMap = JsonUtils.toMap(JsonUtils.toJson(param));
+        final var html = lyCApiService.trace(paramMap);
+        final var matcher = RegexConstants.LY_TRACE_UNAME.matcher(html);
+        final Set<String> result = Sets.newHashSet();
+        while (matcher.find()) {
+            result.add(matcher.group(1));
+        }
+        return result;
     }
 }

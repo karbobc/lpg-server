@@ -15,4 +15,9 @@ public class LyUploadResultDTO {
      * 气瓶条码
      */
     private String barcode;
+
+    /**
+     * 是否获取溯源客户信息
+     */
+    private Boolean trace;
 }

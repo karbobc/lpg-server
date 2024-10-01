@@ -33,9 +33,11 @@ public class MiscController extends BaseController {
     }
 
     @GetMapping("/ly/upload/result")
-    public ApiResult<LyUploadResultVO> fetchUploadResult(@RequestParam String barcode) {
+    public ApiResult<LyUploadResultVO> fetchUploadResult(@RequestParam String barcode,
+                                                         @RequestParam(defaultValue = "false") Boolean trace) {
         final var dto = new LyUploadResultDTO();
         dto.setBarcode(barcode);
+        dto.setTrace(trace);
         return ApiResult.ok(miscService.fetchUploadResult(dto));
     }
 }

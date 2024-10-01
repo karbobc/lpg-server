@@ -3,7 +3,6 @@ package com.hlqz.lpg.lanyang.service;
 import com.github.lianjiatech.retrofit.spring.boot.core.RetrofitClient;
 import com.github.lianjiatech.retrofit.spring.boot.interceptor.Intercept;
 import com.hlqz.lpg.lanyang.interceptor.LyMApiServiceInterceptor;
-import com.hlqz.lpg.lanyang.model.request.LyDeliveryParam;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.POST;
@@ -21,7 +20,7 @@ import java.util.Map;
 public interface LyMApiService {
 
     /**
-     * @param paramMap 通过 {{@link LyDeliveryParam}} 转成 Map
+     * @param paramMap 通过 {{@link com.hlqz.lpg.lanyang.model.request.LyDeliveryParam}} 转成 Map
      * @return {"state":"","data":[{"Spec":"","Code":"","NotExists":"","NotPass":"","BID":"","CustTel":"","CustAddress":"",}],"errorMsg":""}
      */
     @FormUrlEncoded
