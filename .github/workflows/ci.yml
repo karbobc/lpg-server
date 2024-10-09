@@ -26,7 +26,9 @@ jobs:
         run: |
           mvn versions:set -B -DremoveSnapshot -DgenerateBackupPoms=false
           mvn clean package -B -DskipTests
+          pushd target
           java -Djarmode=tools -jar *.jar extract --layers --launcher --destination extracted
+          popd
 
       - name: Set up Maven cache
         uses: actions/cache@v4
