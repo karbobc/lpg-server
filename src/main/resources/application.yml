@@ -33,6 +33,17 @@ spring:
             enable: true
             required: true
 
+management:
+  server:
+    port: 9999
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+
 retrofit:
   global-log:
     log-strategy: basic
