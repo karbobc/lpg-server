@@ -4,6 +4,7 @@ on:
   push:
     tags: [ "v*" ]
     branches: [ "master" ]
+  pull_request:
   workflow_dispatch:
 
 jobs:
@@ -25,8 +26,7 @@ jobs:
         run: |
           mvn versions:set -B -DremoveSnapshot -DgenerateBackupPoms=false
           mvn clean package -B -DskipTests
-          cp target/*.jar lpg-server.jar
-          cp ~/.m2/repository/com/alibaba/transmittable-thread-local/**/*.jar ttl.jar
+          java -Djarmode=tools -jar *.jar extract --layers --launcher --destination extracted
 
       - name: Set up Maven cache
         uses: actions/cache@v4
@@ -36,13 +36,19 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
-      - name: Upload artifact
+      - name: Upload jar artifact
         uses: actions/upload-artifact@v4
         with:
-          name: lpg-server-artifact-${{ runner.os }}
+          name: lpg-server-jar-artifact-${{ runner.os }}
           path: |
-            lpg-server.jar
-            ttl.jar
+            target/*.jar
+
+      - name: Upload layers artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: lpg-server-layers-artifact-${{ runner.os }}
+          path: |
+            target/extracted/*
 
   docker-build-and-push:
     name: Docker build and push
@@ -85,11 +91,11 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Download artifact
+      - name: Download layers artifact
         uses: actions/download-artifact@v4
         with:
-          name: lpg-server-artifact-${{ runner.os }}
-          path: libs
+          name: lpg-server-layers-artifact-${{ runner.os }}
+          path: layers
 
       - name: Build and push
         uses: docker/build-push-action@v6
@@ -97,7 +103,6 @@ jobs:
           context: .
           file: ./Dockerfile
           platforms: linux/amd64,linux/arm64/v8,linux/ppc64le,linux/s390x
-          push: ${{ startsWith(github.event.ref, 'refs/tags/v') }}
           tags: ${{ steps.docker_meta.outputs.tags }}
           labels: ${{ steps.docker_meta.outputs.labels }}
           cache-from: type=gha
