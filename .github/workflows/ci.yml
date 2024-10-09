@@ -50,7 +50,10 @@ jobs:
         with:
           name: lpg-server-layers-artifact-${{ runner.os }}
           path: |
-            target/extracted/*
+            target/extracted/application/
+            target/extracted/dependencies/
+            target/extracted/snapshot-dependencies/
+            target/extracted/spring-boot-loader/
 
   docker-build-and-push:
     name: Docker build and push
@@ -98,6 +101,13 @@ jobs:
         with:
           name: lpg-server-layers-artifact-${{ runner.os }}
           path: layers
+
+      - name: Create missing directory
+        run: |
+          mkdir -p layers/application
+          mkdir -p layers/dependencies
+          mkdir -p layers/snapshot-dependencies
+          mkdir -p layers/spring-boot-loader
 
       - name: Build and push
         uses: docker/build-push-action@v6
