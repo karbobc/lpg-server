@@ -4,6 +4,7 @@ JVM_OPTS="-Xmx512m \
           -Xms512m \
           -XX:+UseZGC \
           -XX:+ZGenerational \
+          -Dspring.profiles.active=prod \
           -Dlog4j2.contextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector \
           -javaagent:/app/$(sed -n 's|.*"\(.*transmittable-thread-local.*\)".*|\1|p' BOOT-INF/classpath.idx) \
           ${JVM_OPTS}"
