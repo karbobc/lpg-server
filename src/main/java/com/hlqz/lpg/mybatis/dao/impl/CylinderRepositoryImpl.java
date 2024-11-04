@@ -3,7 +3,7 @@ package com.hlqz.lpg.mybatis.dao.impl;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.github.yulichang.base.MPJBaseServiceImpl;
 import com.hlqz.lpg.model.entity.Cylinder;
-import com.hlqz.lpg.mybatis.dao.CylinderDAO;
+import com.hlqz.lpg.mybatis.dao.CylinderRepository;
 import com.hlqz.lpg.mybatis.mapper.CylinderMapper;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
  * @date 2024-01-09
  */
 @Service
-public class CylinderDAOImpl extends MPJBaseServiceImpl<CylinderMapper, Cylinder> implements CylinderDAO {
+public class CylinderRepositoryImpl extends MPJBaseServiceImpl<CylinderMapper, Cylinder> implements CylinderRepository {
 
     @Override
     public IPage<Cylinder> fetchBarcodePageUsingLike(String barcode, IPage<Cylinder> page) {

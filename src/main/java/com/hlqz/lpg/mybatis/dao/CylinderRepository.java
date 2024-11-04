@@ -8,7 +8,7 @@ import com.hlqz.lpg.model.entity.Cylinder;
  * @author Karbob
  * @date 2024-01-09
  */
-public interface CylinderDAO extends MPJBaseService<Cylinder> {
+public interface CylinderRepository extends MPJBaseService<Cylinder> {
 
     /**
      * 分页查询气瓶条码, 使用模糊查询

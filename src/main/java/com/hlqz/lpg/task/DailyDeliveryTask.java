@@ -38,12 +38,12 @@ public class DailyDeliveryTask extends AbstractTask {
     protected void execute() {
         // 查询未配送和配送失败的配送信息, 调用兰洋系统进行配送
         IPage<DeliveryWithUserAndCylinderDTO> page = new Page<>(1, BATCH_SIZE);
-        page = deliveryDAO.fetchPageByStates(page, DeliveryStateEnum.NOT_STARTED);
+        page = deliveryRepository.fetchPageByStates(page, DeliveryStateEnum.NOT_STARTED);
         final var pages = page.getPages();
         for (var i = 1; i <= pages; i++) {
             if (i != 1) {
                 page.setCurrent(i);
-                page = deliveryDAO.fetchPageByStates(page, DeliveryStateEnum.NOT_STARTED);
+                page = deliveryRepository.fetchPageByStates(page, DeliveryStateEnum.NOT_STARTED);
             }
             final var records = page.getRecords();
             if (CollectionUtils.isEmpty(records)) {
@@ -71,7 +71,7 @@ public class DailyDeliveryTask extends AbstractTask {
             // 存在多个客户, 人工处理
             log.warn("DailyDeliveryTask, 该用户信息在兰洋系统中存在多个, name: {}, mobile: {}", user.getRealName(), user.getMobile());
             delivery.setState(DeliveryStateEnum.CRASH);
-            AssertionUtils.assertTrue(deliveryDAO.updateById(delivery), "更新配送状态失败");
+            AssertionUtils.assertTrue(deliveryRepository.updateById(delivery), "更新配送状态失败");
             NtfyUtils.sendMessage(StrUtil.format("配送失败, 该用户信息在兰洋系统中存在多个:\n姓名: {}\n手机号码: {}\n气瓶条码: {}",
                 user.getRealName(), user.getMobile(), cylinder.getBarcode()));
             return;
@@ -83,7 +83,7 @@ public class DailyDeliveryTask extends AbstractTask {
         lyService.delivery(lyDeliveryDTO);
         // 更新系统配送状态
         delivery.setState(DeliveryStateEnum.DONE);
-        AssertionUtils.assertTrue(deliveryDAO.updateById(delivery), "更新配送状态失败");
+        AssertionUtils.assertTrue(deliveryRepository.updateById(delivery), "更新配送状态失败");
     }
 
     private LySaveCustomerDTO buildLySaveCustomerDTO(User user, Integer crNo) {

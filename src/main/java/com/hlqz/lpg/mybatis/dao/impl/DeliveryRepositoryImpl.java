@@ -8,7 +8,7 @@ import com.hlqz.lpg.model.entity.Cylinder;
 import com.hlqz.lpg.model.entity.Delivery;
 import com.hlqz.lpg.model.entity.User;
 import com.hlqz.lpg.model.enums.DeliveryStateEnum;
-import com.hlqz.lpg.mybatis.dao.DeliveryDAO;
+import com.hlqz.lpg.mybatis.dao.DeliveryRepository;
 import com.hlqz.lpg.mybatis.mapper.DeliveryMapper;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +19,7 @@ import java.util.Arrays;
  * @date 2024-01-15
  */
 @Service
-public class DeliveryDAOImpl extends MPJBaseServiceImpl<DeliveryMapper, Delivery> implements DeliveryDAO {
+public class DeliveryRepositoryImpl extends MPJBaseServiceImpl<DeliveryMapper, Delivery> implements DeliveryRepository {
 
     @Override
     public boolean existsByUserIdAndBarcodeAndStates(Long userId, String barcode, DeliveryStateEnum... states) {

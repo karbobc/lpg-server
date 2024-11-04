@@ -14,9 +14,9 @@ import com.hlqz.lpg.model.dto.EnrollDTO;
 import com.hlqz.lpg.model.dto.LyUploadResultDTO;
 import com.hlqz.lpg.model.enums.DeliveryStateEnum;
 import com.hlqz.lpg.model.vo.LyUploadResultVO;
-import com.hlqz.lpg.mybatis.dao.CylinderDAO;
-import com.hlqz.lpg.mybatis.dao.DeliveryDAO;
-import com.hlqz.lpg.mybatis.dao.UserDAO;
+import com.hlqz.lpg.mybatis.dao.CylinderRepository;
+import com.hlqz.lpg.mybatis.dao.DeliveryRepository;
+import com.hlqz.lpg.mybatis.dao.UserRepository;
 import com.hlqz.lpg.util.AssertionUtils;
 import com.hlqz.lpg.util.JsonUtils;
 import com.hlqz.lpg.util.RegexUtils;
@@ -38,11 +38,11 @@ import java.util.Objects;
 public class MiscService {
 
     @Resource
-    private UserDAO userDAO;
+    private UserRepository userRepository;
     @Resource
-    private CylinderDAO cylinderDAO;
+    private CylinderRepository cylinderRepository;
     @Resource
-    private DeliveryDAO deliveryDAO;
+    private DeliveryRepository deliveryRepository;
     @Resource
     private LyService lyService;
 
@@ -56,29 +56,29 @@ public class MiscService {
         AssertionUtils.assertTrue(PhoneUtil.isMobile(mobile) || PhoneUtil.isTel(mobile), "请输入正确的手机号码");
         AssertionUtils.assertTrue(RegexUtils.matches(RegexConstants.USER_ADDRESS, address), "请输入正确的住址");
         // 查询钢瓶档案, 本地数据库不存在, 则查询兰洋系统
-        var cylinder = cylinderDAO.fetchByBarcode(barcode);
+        var cylinder = cylinderRepository.fetchByBarcode(barcode);
         if (Objects.isNull(cylinder)) {
             final var lyCylinder = lyService.fetchCylinderByBarcodes(barcode);
             AssertionUtils.assertNotEmpty(lyCylinder, "气瓶条码不存在");
             cylinder = CylinderConvert.from(lyCylinder.getFirst());
-            cylinderDAO.save(cylinder);
+            cylinderRepository.save(cylinder);
         }
         // 查询用户数据
-        var user = userDAO.fetchByRealNameAndMobile(realName, mobile);
+        var user = userRepository.fetchByRealNameAndMobile(realName, mobile);
         if (Objects.isNull(user)) {
             user = UserConvert.from(dto);
-            userDAO.save(user);
+            userRepository.save(user);
         }
         // 重复提交保证接口幂等
         // 配送信息表中, 一个用户可以对应多个不同的气瓶条码, 但是状态不能是未配送或配送失败的
         // 一个气瓶条码也可以对应多个用户, 对应多个用户的时候, 最多只能有一个未配送或配送失败的, 剩下的全部是配送成功的
-        if (deliveryDAO.existsByUserIdAndBarcodeAndStates(user.getId(), barcode, DeliveryStateEnum.NOT_STARTED, DeliveryStateEnum.CRASH)) {
+        if (deliveryRepository.existsByUserIdAndBarcodeAndStates(user.getId(), barcode, DeliveryStateEnum.NOT_STARTED, DeliveryStateEnum.CRASH)) {
             log.warn("MiscService, 重复配送, userId: {}, name: {}, mobile: {}, address: {}", user.getId(), realName, mobile, address);
             return;
         }
         // 保存配送信息
         final var delivery = DeliveryConvert.from(user, cylinder);
-        deliveryDAO.save(delivery);
+        deliveryRepository.save(delivery);
     }
 
     public LyUploadResultVO fetchUploadResult(LyUploadResultDTO dto) {
