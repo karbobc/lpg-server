@@ -10,7 +10,7 @@ import com.hlqz.lpg.lanyang.model.common.LyCylinder;
 import com.hlqz.lpg.lanyang.service.LyService;
 import com.hlqz.lpg.model.entity.Cylinder;
 import com.hlqz.lpg.model.vo.CylinderDiffVO;
-import com.hlqz.lpg.mybatis.dao.CylinderDAO;
+import com.hlqz.lpg.mybatis.dao.CylinderRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
@@ -48,7 +48,7 @@ public class CylinderExcelReadListener implements ReadListener<CylinderExcelData
      */
     private static final List<CylinderDiffVO> DIFF_LIST = Lists.newArrayList();
 
-    private CylinderDAO cylinderDAO;
+    private CylinderRepository cylinderRepository;
     private LyService lyService;
 
     /**
@@ -59,8 +59,8 @@ public class CylinderExcelReadListener implements ReadListener<CylinderExcelData
     private CylinderExcelReadListener() {
     }
 
-    public CylinderExcelReadListener(CylinderDAO cylinderDAO, LyService lyService, Boolean repair) {
-        this.cylinderDAO = cylinderDAO;
+    public CylinderExcelReadListener(CylinderRepository cylinderRepository, LyService lyService, Boolean repair) {
+        this.cylinderRepository = cylinderRepository;
         this.lyService = lyService;
         this.repair = repair;
     }
@@ -133,10 +133,10 @@ public class CylinderExcelReadListener implements ReadListener<CylinderExcelData
             }
         }
         // 如果是气瓶条码重复, 跳过这条数据, 可能存在纠正后的数据气瓶条码重复, 目前不处理, 待后续人工处理
-        if (cylinderDAO.existsByBarcode(barcode)) {
+        if (cylinderRepository.existsByBarcode(barcode)) {
             return;
         }
-        var entity = cylinderDAO.fetchBySerialNo(serialNo);
+        var entity = cylinderRepository.fetchBySerialNo(serialNo);
         while (Objects.nonNull(entity)) {
             var entitySerialNo = entity.getSerialNo();
             var entityBarcode = entity.getBarcode();
@@ -167,13 +167,13 @@ public class CylinderExcelReadListener implements ReadListener<CylinderExcelData
             // 纠正成功的可能有, 当前行的数据和数据库中的数据都被纠正, 或者只有其中一个被纠正
             if (repairedEntity) {
                 entity.setSerialNo(diffVO.getSerialNo2());
-                cylinderDAO.updateById(entity);
+                cylinderRepository.updateById(entity);
                 // 保证只有数据库中数据被纠正时, 能够退出循环
                 entity = null;
             }
             if (repairedData) {
                 serialNo = diffVO.getSerialNo1();
-                entity = cylinderDAO.fetchBySerialNo(serialNo);
+                entity = cylinderRepository.fetchBySerialNo(serialNo);
             }
         }
         data.setSerialNo(serialNo);
@@ -183,7 +183,7 @@ public class CylinderExcelReadListener implements ReadListener<CylinderExcelData
         CACHED_MAP.put(barcode, serialNo);
         // 分批次入库
         if (CACHED_LIST.size() == BATCH_COUNT) {
-            cylinderDAO.saveBatch(CACHED_LIST);
+            cylinderRepository.saveBatch(CACHED_LIST);
             CACHED_LIST.clear();
             CACHED_MAP.clear();
         }
@@ -192,7 +192,7 @@ public class CylinderExcelReadListener implements ReadListener<CylinderExcelData
     @Override
     public void doAfterAllAnalysed(AnalysisContext context) {
         if (CollectionUtils.isNotEmpty(CACHED_LIST)) {
-            cylinderDAO.saveBatch(CACHED_LIST);
+            cylinderRepository.saveBatch(CACHED_LIST);
             CACHED_LIST.clear();
             CACHED_MAP.clear();
         }

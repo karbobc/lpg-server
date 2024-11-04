@@ -10,7 +10,7 @@ import com.hlqz.lpg.model.enums.DeliveryStateEnum;
  * @author Karbob
  * @date 2024-01-15
  */
-public interface DeliveryDAO extends MPJBaseService<Delivery> {
+public interface DeliveryRepository extends MPJBaseService<Delivery> {
 
     /**
      * 根据用户 ID, 气瓶条码, 配送状态判断配送信息是否存在

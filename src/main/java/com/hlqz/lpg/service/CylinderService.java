@@ -13,7 +13,7 @@ import com.hlqz.lpg.model.entity.Cylinder;
 import com.hlqz.lpg.model.enums.RcEnum;
 import com.hlqz.lpg.model.vo.CylinderSearchVO;
 import com.hlqz.lpg.model.vo.CylinderUploadVO;
-import com.hlqz.lpg.mybatis.dao.CylinderDAO;
+import com.hlqz.lpg.mybatis.dao.CylinderRepository;
 import com.hlqz.lpg.util.AssertionUtils;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -33,14 +33,14 @@ import java.util.Objects;
 public class CylinderService {
 
     @Resource
-    private CylinderDAO cylinderDAO;
+    private CylinderRepository cylinderRepository;
     @Resource
     private LyService lyService;
 
     public List<CylinderSearchVO> search(CylinderSearchDTO dto) {
         final var barcode = dto.getBarcode().trim().toUpperCase();
         final var queryPage = new Page<Cylinder>(1, 5);
-        final var result = cylinderDAO.fetchBarcodePageUsingLike(barcode, queryPage);
+        final var result = cylinderRepository.fetchBarcodePageUsingLike(barcode, queryPage);
         final List<Cylinder> cylinderList = result.getRecords();
         return CylinderConvert.toVO(cylinderList);
     }
@@ -63,7 +63,7 @@ public class CylinderService {
                 continue;
             }
             // 处理 Excel
-            final var listener = new CylinderExcelReadListener(cylinderDAO, lyService, repair);
+            final var listener = new CylinderExcelReadListener(cylinderRepository, lyService, repair);
             try {
                 EasyExcel.read(file.getInputStream(), CylinderExcelData.class, listener)
                     .sheet()
