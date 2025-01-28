@@ -2,13 +2,16 @@ package com.hlqz.lpg.lanyang.helper;
 
 import cn.hutool.core.codec.Base64;
 import cn.hutool.core.util.IdUtil;
+import com.hlqz.lpg.lanyang.model.common.LyBoxDockingField;
 import com.hlqz.lpg.lanyang.model.common.LyCustomer;
 import com.hlqz.lpg.lanyang.model.dto.LyDeliveryDTO;
 import com.hlqz.lpg.lanyang.model.dto.LySaveCustomerDTO;
 import com.hlqz.lpg.lanyang.model.enums.LyOrderTypeEnum;
+import com.hlqz.lpg.lanyang.model.request.LyBoxDockingParam;
 import com.hlqz.lpg.lanyang.model.request.LyDeliveryParam;
 import com.hlqz.lpg.lanyang.model.request.LyFetchByPageParam;
 import com.hlqz.lpg.util.ConfigUtils;
+import com.hlqz.lpg.util.JsonUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -71,6 +74,15 @@ public class LyHelper {
         param.setSyncTab(1);
         param.setDeliveryDate(deliveryDate);
         param.setSerialNo(IdUtil.fastSimpleUUID());
+        return param;
+    }
+
+    public static LyBoxDockingParam buildBoxDockingParam(String barcode) {
+        final var param = new LyBoxDockingParam();
+        final var field = new LyBoxDockingField();
+        field.setBarcode(barcode);
+        param.setAction("1");
+        param.setField(JsonUtils.toJson(field));
         return param;
     }
 

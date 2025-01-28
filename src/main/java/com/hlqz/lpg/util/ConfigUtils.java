@@ -18,6 +18,10 @@ public class ConfigUtils {
         return SpringUtil.getProperty("LY_COOKIE");
     }
 
+    public static String getLyNewCookie() {
+        return SpringUtil.getProperty("LY_NEW_COOKIE");
+    }
+
     public static String getLyOptId() {
         return SpringUtil.getProperty("LY_OPT_ID");
     }

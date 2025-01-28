@@ -3,6 +3,7 @@ package com.hlqz.lpg.lanyang.service;
 import com.google.common.collect.Sets;
 import com.hlqz.lpg.constant.RegexConstants;
 import com.hlqz.lpg.lanyang.helper.LyHelper;
+import com.hlqz.lpg.lanyang.model.common.LyBoxDocking;
 import com.hlqz.lpg.lanyang.model.common.LyCustomer;
 import com.hlqz.lpg.lanyang.model.common.LyCylinder;
 import com.hlqz.lpg.lanyang.model.dto.LyDeliveryDTO;
@@ -37,6 +38,8 @@ public class LyService {
     private LyMApiService lyMApiService;
     @Resource
     private LyCApiService lyCApiService;
+    @Resource
+    private LyNewApiService lyNewApiService;
 
     /**
      * 根据 SQL 条件查询钢瓶数据, 并限制数据返回的个数
@@ -214,5 +217,14 @@ public class LyService {
             result.add(matcher.group(1));
         }
         return result;
+    }
+
+    public List<LyBoxDocking> fetchBoxDocking(String barcode) {
+        final var param = LyHelper.buildBoxDockingParam(barcode);
+        final var paramMap = JsonUtils.toMap(JsonUtils.toJson(param));
+        final var response = lyNewApiService.botDocking(paramMap);
+        AssertionUtils.assertEquals(response.getCode(), 0, response.getMessage());
+        AssertionUtils.assertNotNull(response.getData(), "兰洋系统接口登录失效");
+        return response.getData();
     }
 }
