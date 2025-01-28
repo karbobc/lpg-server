@@ -2,8 +2,10 @@ package com.hlqz.lpg.controller;
 
 import com.hlqz.lpg.model.common.ApiResult;
 import com.hlqz.lpg.model.dto.EnrollDTO;
+import com.hlqz.lpg.model.dto.LyBoxDockingDTO;
 import com.hlqz.lpg.model.dto.LyUploadResultDTO;
 import com.hlqz.lpg.model.param.EnrollParam;
+import com.hlqz.lpg.model.vo.LyBoxDockingVO;
 import com.hlqz.lpg.model.vo.LyUploadResultVO;
 import com.hlqz.lpg.service.MiscService;
 import jakarta.annotation.Resource;
@@ -39,5 +41,14 @@ public class MiscController extends BaseController {
         dto.setBarcode(barcode);
         dto.setTrace(trace);
         return ApiResult.ok(miscService.fetchUploadResult(dto));
+    }
+
+    @GetMapping("/ly/v2/upload/result")
+    public ApiResult<LyBoxDockingVO> fetchBoxDocking(@RequestParam String barcode,
+                                                     @RequestParam(defaultValue = "false") Boolean trace) {
+        final var dto = new LyBoxDockingDTO();
+        dto.setBarcode(barcode);
+        dto.setTrace(trace);
+        return ApiResult.ok(miscService.fetchBoxDocking(dto));
     }
 }

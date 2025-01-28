@@ -11,8 +11,10 @@ import com.hlqz.lpg.model.convert.DeliveryConvert;
 import com.hlqz.lpg.model.convert.LyCustomerConvert;
 import com.hlqz.lpg.model.convert.UserConvert;
 import com.hlqz.lpg.model.dto.EnrollDTO;
+import com.hlqz.lpg.model.dto.LyBoxDockingDTO;
 import com.hlqz.lpg.model.dto.LyUploadResultDTO;
 import com.hlqz.lpg.model.enums.DeliveryStateEnum;
+import com.hlqz.lpg.model.vo.LyBoxDockingVO;
 import com.hlqz.lpg.model.vo.LyUploadResultVO;
 import com.hlqz.lpg.mybatis.dao.CylinderRepository;
 import com.hlqz.lpg.mybatis.dao.DeliveryRepository;
@@ -111,6 +113,19 @@ public class MiscService {
         } catch (Exception e) {
             vo.setResult(lyCylinder.getUploadResult());
         }
+        return vo;
+    }
+
+    public LyBoxDockingVO fetchBoxDocking(LyBoxDockingDTO dto) {
+        final var lyBoxDockingList = lyService.fetchBoxDocking(dto.getBarcode());
+        AssertionUtils.assertNotEmpty(lyBoxDockingList, "未查询到钢瓶信息");
+        final var boxDocking = lyBoxDockingList.getFirst();
+        final var vo = new LyBoxDockingVO();
+        vo.setBarcode(boxDocking.getBarcode());
+        vo.setSerialNo(boxDocking.getSerialNo());
+        vo.setResult(boxDocking.getRspState());
+        vo.setAuditState(boxDocking.getAuditState().getDesc());
+        vo.setUpdatedAt(boxDocking.getUpdateTime());
         return vo;
     }
 }
