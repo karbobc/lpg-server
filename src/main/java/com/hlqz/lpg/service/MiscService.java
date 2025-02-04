@@ -120,11 +120,12 @@ public class MiscService {
         final var lyBoxDockingList = lyService.fetchBoxDocking(dto.getBarcode());
         AssertionUtils.assertNotEmpty(lyBoxDockingList, "未查询到钢瓶信息");
         final var boxDocking = lyBoxDockingList.getFirst();
+        final var auditState = boxDocking.getAuditState();
         final var vo = new LyBoxDockingVO();
         vo.setBarcode(boxDocking.getBarcode());
         vo.setSerialNo(boxDocking.getSerialNo());
         vo.setResult(boxDocking.getRspState());
-        vo.setAuditState(boxDocking.getAuditState().getDesc());
+        vo.setAuditState(Objects.isNull(auditState) ? StringUtils.EMPTY : auditState.getDesc());
         vo.setUpdatedAt(boxDocking.getUpdateTime());
         return vo;
     }
