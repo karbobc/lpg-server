@@ -18,7 +18,7 @@
     <apache-commons-lang3.version>3.17.0</apache-commons-lang3.version>
     <apahce-commons-collection4.version>4.4</apahce-commons-collection4.version>
     <hutool.version>5.8.36</hutool.version>
-    <guava.version>33.4.0-jre</guava.version>
+    <guava.version>33.4.5-jre</guava.version>
     <easyexcel.version>4.0.3</easyexcel.version>
     <transmittable-thread-local.version>2.14.5</transmittable-thread-local.version>
     <log4j2-ttl-thread-context-map.version>1.4.0</log4j2-ttl-thread-context-map.version>
