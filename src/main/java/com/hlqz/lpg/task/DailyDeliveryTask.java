@@ -14,7 +14,6 @@ import com.hlqz.lpg.service.util.NtfyUtils;
 import com.hlqz.lpg.util.AssertionUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -26,6 +25,7 @@ import java.util.List;
  */
 @Slf4j
 @Component
+@Deprecated
 public class DailyDeliveryTask extends AbstractTask {
 
     /**
@@ -33,7 +33,6 @@ public class DailyDeliveryTask extends AbstractTask {
      */
     private static final int BATCH_SIZE = 20;
 
-    @Scheduled(cron = "0 0 */2 * * ?")
     @Override
     protected void execute() {
         // 查询未配送和配送失败的配送信息, 调用兰洋系统进行配送
