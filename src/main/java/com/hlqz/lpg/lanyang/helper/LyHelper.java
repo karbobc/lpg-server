@@ -81,6 +81,7 @@ public class LyHelper {
         final var param = new LyBoxDockingParam();
         final var field = new LyBoxDockingField();
         field.setBarcode(barcode);
+        field.setPlatformNo("19");
         param.setAction("1");
         param.setField(JsonUtils.toJson(field));
         return param;

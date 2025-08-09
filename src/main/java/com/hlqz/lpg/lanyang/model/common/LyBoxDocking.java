@@ -32,6 +32,12 @@ public class LyBoxDocking {
     private String barcode;
 
     /**
+     * 平台编号
+     */
+    @JsonProperty("ExcuteMethod")
+    private String platformNo;
+
+    /**
      * 上传返回
      */
     @JsonProperty("RspState")
@@ -53,5 +59,5 @@ public class LyBoxDocking {
      * 首次提交时间
      */
     @JsonProperty("CreateTime")
-    private String CreateTime;
+    private String createTime;
 }
