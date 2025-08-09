@@ -28,6 +28,12 @@ public class LyBoxDockingField {
     private String barcode;
 
     /**
+     * 平台编号
+     */
+    @JsonProperty("ExcuteMethod")
+    private String platformNo;
+
+    /**
      * 审核状态
      */
     @JsonProperty("AuditState")
@@ -43,5 +49,5 @@ public class LyBoxDockingField {
      * 首次提交时间
      */
     @JsonProperty("AddTimeStr")
-    private String CreateTime;
+    private String createTime;
 }
