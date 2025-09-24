@@ -15,7 +15,7 @@
   <description>LPG Server</description>
   <properties>
     <java.version>21</java.version>
-    <apache-commons-lang3.version>3.18.0</apache-commons-lang3.version>
+    <apache-commons-lang3.version>3.19.0</apache-commons-lang3.version>
     <apahce-commons-collection4.version>4.5.0</apahce-commons-collection4.version>
     <hutool.version>5.8.38</hutool.version>
     <guava.version>33.5.0-jre</guava.version>
