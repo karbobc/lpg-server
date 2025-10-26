@@ -39,14 +39,14 @@ jobs:
             ${{ runner.os }}-maven-
 
       - name: Upload jar artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: lpg-server-jar-artifact-${{ runner.os }}
           path: |
             target/*.jar
 
       - name: Upload layers artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: lpg-server-layers-artifact-${{ runner.os }}
           path: |
@@ -97,7 +97,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Download layers artifact
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           name: lpg-server-layers-artifact-${{ runner.os }}
           path: layers
