@@ -21,9 +21,6 @@ spring:
       enabled: true
       max-file-size: 3MB
       max-request-size: 30MB
-  http:
-    converters:
-      preferred-json-mapper: jackson2
   flyway:
     locations: classpath:migrations/{vendor}
     table: t_migrations
