@@ -50,6 +50,12 @@ management:
     health:
       show-details: always
 
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    enabled: false
+
 retrofit:
   global-log:
     log-strategy: basic

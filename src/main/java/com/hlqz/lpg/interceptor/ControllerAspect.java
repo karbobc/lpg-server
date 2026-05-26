@@ -19,7 +19,6 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.util.ContentCachingRequestWrapper;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;
@@ -46,8 +45,7 @@ public class ControllerAspect {
         // 存储请求开始时间
         MDC.put(MdcKeyConstants.REQUEST_START_TIME, String.valueOf(System.currentTimeMillis()));
         // 请求内容处理
-        final var request = httpServletRequest instanceof ContentCachingRequestWrapper ?
-            (ContentCachingRequestWrapper) httpServletRequest : new ContentCachingRequestWrapper(httpServletRequest);
+        final var request = httpServletRequest;
         final var method = request.getMethod();
         final var path = request.getServletPath();
         final var queryString = StringUtils.defaultIfBlank(request.getQueryString(), "[Empty Query]");

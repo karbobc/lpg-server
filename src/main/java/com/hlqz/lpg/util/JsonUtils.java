@@ -1,21 +1,20 @@
 package com.hlqz.lpg.util;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.json.JsonReadFeature;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalTimeDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
 import com.hlqz.lpg.exception.BizException;
 import org.apache.commons.lang3.StringUtils;
+import tools.jackson.core.json.JsonReadFeature;
+import tools.jackson.databind.DeserializationFeature;
+import tools.jackson.databind.JavaType;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ext.javatime.deser.LocalDateDeserializer;
+import tools.jackson.databind.ext.javatime.deser.LocalDateTimeDeserializer;
+import tools.jackson.databind.ext.javatime.deser.LocalTimeDeserializer;
+import tools.jackson.databind.ext.javatime.ser.LocalDateSerializer;
+import tools.jackson.databind.ext.javatime.ser.LocalDateTimeSerializer;
+import tools.jackson.databind.ext.javatime.ser.LocalTimeSerializer;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.module.SimpleModule;
+import tools.jackson.databind.ser.std.ToStringSerializer;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -35,33 +34,35 @@ public class JsonUtils {
 
     private static final ObjectMapper om;
     static {
-        om = new ObjectMapper();
         // Long 序列化为 String, 避免接口回传到前端丢失精度
         SimpleModule longToStringModule = new SimpleModule();
         longToStringModule.addSerializer(Long.class, ToStringSerializer.instance);
-        om.registerModule(longToStringModule);
-        // 时间格式序列化和反序列化
-        om.registerModule(buildJavaTypeModule());
+
         SimpleDateFormat sdf = new SimpleDateFormat(DateTimeUtils.PATTERN_DATETIME);
-        om.setDateFormat(sdf);
-        // 反序列化为 Map, Collection 类型时候, 使用 BigDecimal 替代 Float, 否则在反序列化为 Object 时候会丢失精度
-        om.configure(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS, true);
-        // 避免反系列化未知列时出现异常
-        om.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        // 允许单引号的 json 格式
-        om.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
-        // 允许末尾多余的英文逗号
-        om.configure(JsonReadFeature.ALLOW_TRAILING_COMMA.mappedFeature(), true);
+
+        om = JsonMapper.builder()
+            .addModule(longToStringModule)
+            .addModule(buildJavaTimeModule())
+            .defaultDateFormat(sdf)
+            // 反序列化为 Map, Collection 类型时候, 使用 BigDecimal 替代 Float, 否则在反序列化为 Object 时候会丢失精度
+            .configure(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS, true)
+            // 避免反系列化未知列时出现异常
+            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+            // 允许单引号的 json 格式
+            .configure(JsonReadFeature.ALLOW_SINGLE_QUOTES, true)
+            // 允许末尾多余的英文逗号
+            .configure(JsonReadFeature.ALLOW_TRAILING_COMMA, true)
+            .build();
     }
 
     private JsonUtils() {
     }
 
     /**
-     * 构造 JavaTypeModule
+     * 构造 Java Time 序列化模块
      */
-    private static JavaTimeModule buildJavaTypeModule() {
-        JavaTimeModule javaTimeModule = new JavaTimeModule();
+    private static SimpleModule buildJavaTimeModule() {
+        SimpleModule javaTimeModule = new SimpleModule();
         javaTimeModule.addSerializer(LocalDateTime.class,
             new LocalDateTimeSerializer(DateTimeFormatter.ofPattern(DateTimeUtils.PATTERN_DATETIME)));
         javaTimeModule.addSerializer(LocalDate.class,
@@ -82,7 +83,7 @@ public class JsonUtils {
      * @return ObjectMapper 实例
      */
     public static ObjectMapper getInstance() {
-        return om.copy();
+        return om.rebuild().build();
     }
 
     /**

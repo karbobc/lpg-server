@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <Configuration xmlns="http://logging.apache.org/log4j/2.0/config">
   <Properties>
-    <Property name="LOG_DIR">$${env:LOG_DIR:-logs}</Property>
-    <Property name="LOG_PATTERN">
+    <Property name="log.dir">${env:LOG_DIR:-logs}</Property>
+    <Property name="log.pattern">
       %d{yyyy-MM-dd HH:mm:ss,SSS} %highlight{%5level} [%style{%X{traceId}}{magenta}] [%t] %style{%logger{36}}{cyan}: %msg%n
     </Property>
-    <Property name="PROJECT_NAME">lpg</Property>
+    <Property name="project.name">lpg</Property>
   </Properties>
   <Appenders>
     <Console name="consoleAppender" target="SYSTEM_OUT">
-      <PatternLayout pattern="${LOG_PATTERN}" />
+      <PatternLayout pattern="${log.pattern}" />
     </Console>
     <RollingRandomAccessFile name="rollingAppender"
                              immediateFlush="false"
-                             fileName="${LOG_DIR}/${PROJECT_NAME}.log"
-                             filePattern="${LOG_DIR}/${PROJECT_NAME}-%d{yyyy-MM-dd}_%i.log">
-      <PatternLayout disableAnsi="true" pattern="${LOG_PATTERN}"/>
+                             fileName="${log.dir}/${project.name}.log"
+                             filePattern="${log.dir}/${project.name}-%d{yyyy-MM-dd}_%i.log">
+      <PatternLayout disableAnsi="true" pattern="${log.pattern}"/>
       <Policies>
         <OnStartupTriggeringPolicy />
         <TimeBasedTriggeringPolicy />

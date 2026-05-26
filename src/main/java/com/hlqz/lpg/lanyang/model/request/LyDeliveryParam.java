@@ -3,10 +3,6 @@ package com.hlqz.lpg.lanyang.model.request;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.hlqz.lpg.util.DateTimeUtils;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -40,8 +36,6 @@ public class LyDeliveryParam {
     /**
      * 配送日期
      */
-    @JsonSerialize(using = LocalDateSerializer.class)
-    @JsonDeserialize(using = LocalDateDeserializer.class)
     @JsonFormat(pattern = DateTimeUtils.PATTERN_DATE)
     private LocalDate deliveryDate;
 
