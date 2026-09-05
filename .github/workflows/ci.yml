@@ -18,9 +18,9 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v6
         with:
-          distribution: "temurin"
-          java-version: "25"
-          cache: "maven"
+          distribution: temurin
+          java-version: 25
+          cache: maven
 
       - name: Build with Maven
         run: |
@@ -29,14 +29,6 @@ jobs:
           pushd target
           java -Djarmode=tools -jar *.jar extract --layers --launcher --destination extracted
           popd
-
-      - name: Set up Maven cache
-        uses: actions/cache@v6
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
 
       - name: Upload jar artifact
         uses: actions/upload-artifact@v7
@@ -50,10 +42,10 @@ jobs:
         with:
           name: lpg-server-layers-artifact-${{ runner.os }}
           path: |
-            target/extracted/application/
             target/extracted/dependencies/
-            target/extracted/snapshot-dependencies/
             target/extracted/spring-boot-loader/
+            target/extracted/snapshot-dependencies/
+            target/extracted/application/
 
   docker-build-and-push:
     name: Docker build and push
@@ -104,10 +96,10 @@ jobs:
 
       - name: Create missing directory
         run: |
-          mkdir -p layers/application
           mkdir -p layers/dependencies
-          mkdir -p layers/snapshot-dependencies
           mkdir -p layers/spring-boot-loader
+          mkdir -p layers/snapshot-dependencies
+          mkdir -p layers/application
 
       - name: Build and push
         uses: docker/build-push-action@v7
