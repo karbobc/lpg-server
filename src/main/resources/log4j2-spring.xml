@@ -18,10 +18,16 @@
       <PatternLayout disableAnsi="true" pattern="${log.pattern}"/>
       <Policies>
         <OnStartupTriggeringPolicy />
-        <TimeBasedTriggeringPolicy />
+        <TimeBasedTriggeringPolicy interval="1" />
         <SizeBasedTriggeringPolicy size="128MB"/>
       </Policies>
-      <DefaultRolloverStrategy max="15" compressionLevel="0"/>
+      <DefaultRolloverStrategy fileIndex="nomax">
+        <Delete basePath="${log.dir}" maxDepth="1">
+          <IfFileName glob="${project.name}-*.log">
+            <IfLastModified age="15d" />
+          </IfFileName>
+        </Delete>
+      </DefaultRolloverStrategy>
     </RollingRandomAccessFile>
   </Appenders>
   <Loggers>
