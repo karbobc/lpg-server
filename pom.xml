@@ -25,7 +25,7 @@
     <retrofit-spring-boot.version>4.2.1</retrofit-spring-boot.version>
     <mybatis-plus.version>3.5.17</mybatis-plus.version>
     <mybatis-plus-join.version>1.5.9</mybatis-plus-join.version>
-    <springdoc.version>3.1.0</springdoc.version>
+    <springdoc.version>3.1.1</springdoc.version>
     <disruptor.version>4.0.0</disruptor.version>
   </properties>
 
